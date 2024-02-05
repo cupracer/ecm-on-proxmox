@@ -10,6 +10,7 @@ locals {
   vm_storage_pool                 = var.storage_pool
   vm_iso_storage_pool             = var.iso_storage_pool
   vm_network_bridge               = var.network_bridge
+  vm_root_public_keys             = [ for key in try(split("\n", file(local.vm_ci_root_authorized_keys_file)), []) : key if key != "" ]
   vm_ci_root_authorized_keys_file = var.ci_root_authorized_keys_file
   vm_ci_root_lock_password        = var.ci_root_lock_password
   vm_ci_root_plain_password       = var.ci_root_plain_password
@@ -26,7 +27,7 @@ resource "proxmox_cloud_init_disk" "ci" {
   })
 
   user_data = templatefile("ci_user_data.yaml.tftpl", {
-    root_public_keys = [ for key in try(split("\n", file(local.vm_ci_root_authorized_keys_file)), []) : key if key != "" ],
+    root_public_keys = local.vm_root_public_keys,
     root_lock_password = local.vm_ci_root_lock_password,
     root_plain_password = local.vm_ci_root_plain_password
   })
