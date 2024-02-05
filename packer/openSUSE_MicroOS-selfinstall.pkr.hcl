@@ -52,7 +52,7 @@ source "proxmox-iso" "microos" {
   }
 
   ssh_username         = "root"
-  ssh_private_key_file = "../ssh_files/packer"
+  ssh_private_key_file = "./ssh_files/packer"
   # ssh_timeout          = "20m"
 
   additional_iso_files {
