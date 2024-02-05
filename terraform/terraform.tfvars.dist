@@ -1,0 +1,11 @@
+proxmox_api_url              = "https://changeme.example.com:8006/api2/json"
+proxmox_api_token_id         = "changeme"
+proxmox_api_token_secret     = "changeme"
+proxmox_node                 = "changeme"
+storage_pool                 = "local"
+iso_storage_pool             = "local"
+network_bridge               = "vmbr0"
+ci_root_authorized_keys_file = "root_authorized_keys"
+ci_root_lock_password        = false
+ci_root_plain_password       = "changeme"
+
