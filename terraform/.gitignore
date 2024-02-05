@@ -1,0 +1,4 @@
+terraform.tfstate*
+.terraform*
+terraform.tfvars
+root_authorized_keys
