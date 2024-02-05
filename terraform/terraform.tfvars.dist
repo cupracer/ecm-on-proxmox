@@ -8,4 +8,4 @@ network_bridge               = "vmbr0"
 ci_root_authorized_keys_file = "root_authorized_keys"
 ci_root_lock_password        = false
 ci_root_plain_password       = "changeme"
-
+ssh_private_key_file         = ""
