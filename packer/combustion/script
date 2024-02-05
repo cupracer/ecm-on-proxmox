@@ -14,6 +14,9 @@ mkdir -pm700 /root/.ssh/
 cat ./ssh_public_keys/*.pub >> /root/.ssh/authorized_keys
 systemctl enable sshd.service
 
+# Set timezone
+ln -fs /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+
 # Install additional software
 zypper --non-interactive install --recommends \
     qemu-guest-agent cloud-init \
