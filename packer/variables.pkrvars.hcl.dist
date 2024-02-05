@@ -1,0 +1,13 @@
+proxmox_url         = "https://changeme.example.com:8006/api2/json"
+proxmox_node        = "changeme"
+proxmox_username    = "changeme"
+proxmox_token       = "changeme"
+storage_pool        = "local"
+iso_storage_pool    = "local"
+network_bridge      = "vmbr0"
+iso_file            = "local:iso/some.iso"
+iso_checksum        = "none"
+cpu_cores           = 2
+memory              = 2048
+disk_size           = "5G"
+

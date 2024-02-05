@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# combustion: network
+
+# Redirect output to the console
+exec > >(exec tee -a /dev/tty0) 2>&1
+
+# Set a password for root, generate the hash with "openssl passwd -6"
+# (current password is "secret")
+# echo 'root:$6$8SNvEU5S7x7fknjB$JrXT4WT.exsM4DwH09GdMSYdwjtuFF9ZN.t.j.KlacrmOINtrQxoAbheHEElrVaiBe/V9gWcagJFGnmZivj9Y/' | chpasswd -e
+
+# Add a public ssh key and enable sshd
+mkdir -pm700 /root/.ssh/
+cat ./ssh_public_keys/*.pub >> /root/.ssh/authorized_keys
+systemctl enable sshd.service
+
+# Install additional software
+zypper --non-interactive install --recommends \
+    qemu-guest-agent cloud-init \
+    iptables bind-utils mtr tcpdump wireguard-tools \
+    restorecond setools-console \
+    open-iscsi nfs-client cifs-utils \
+    bash-completion git cryptsetup
+
+# Disable predictable network names
+sed -i 's/^\(GRUB_CMDLINE_LINUX_DEFAULT.*\)\"$/\1 net.ifnames=0"/' /etc/default/grub
+
+# Decrease Grub timeout
+sed -i 's/^\(GRUB_TIMEOUT=\).*$/\12/' /etc/default/grub
+
+# Write Grub config
+grub2-mkconfig -o /boot/grub2/grub.cfg
+
+# Set MOTD
+printf "\n  ..:: GET READY - PLAYER 1 ::..\n\n" > /etc/motd.d/ready-player-one
+
