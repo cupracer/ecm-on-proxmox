@@ -7,29 +7,29 @@ num_control_planes        = 1
 root_authorized_keys_file = null
 
 # PROXMOX settings
-proxmox_api_url                = "https://changeme.example.com:8006/api2/json"
-proxmox_api_token_id           = "changeme"
-proxmox_api_token_secret       = "changeme"
-proxmox_tls_insecure           = false
-proxmox_node                   = "changeme"
-proxmox_storage_pool           = "local"
-proxmox_iso_storage_pool       = "local"
-proxmox_network_bridge         = "vmbr0"
-proxmox_ci_root_lock_password  = true
-proxmox_ci_root_plain_password = "changeme"
+#proxmox_api_url                = "https://changeme.example.com:8006/api2/json"
+#proxmox_api_token_id           = ""
+#proxmox_api_token_secret       = ""
+#proxmox_tls_insecure           = false
+#proxmox_node                   = ""
+#proxmox_storage_pool           = ""
+#proxmox_iso_storage_pool       = ""
+#proxmox_network_bridge         = ""
+#proxmox_ci_root_lock_password  = true
+#proxmox_ci_root_plain_password = ""
 
 # VSPHERE settings
-vsphere_user = 
-vsphere_password = 
-vsphere_server = 
-vsphere_allow_unverified_ssl = 
-vsphere_datacenter = 
-vsphere_compute_cluster = 
-vsphere_datastore = 
-vsphere_resource_pool = 
-vsphere_network_cluster = 
-vsphere_template = 
-vsphere_folder = 
-vsphere_ci_root_lock_password = 
-vsphere_ci_root_plain_password = 
+#vsphere_user                   = ""
+#vsphere_password               = ""
+#vsphere_server                 = ""
+#vsphere_allow_unverified_ssl   = false
+#vsphere_datacenter             = ""
+#vsphere_compute_cluster        = ""
+#vsphere_datastore              = ""
+#vsphere_resource_pool          = ""
+#vsphere_network_cluster        = ""
+#vsphere_template               = ""
+#vsphere_folder                 = ""
+#vsphere_ci_root_lock_password  = true
+#vsphere_ci_root_plain_password = ""
 
