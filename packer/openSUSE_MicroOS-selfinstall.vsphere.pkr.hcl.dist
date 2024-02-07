@@ -35,7 +35,7 @@ source "vsphere-iso" "microos" {
   ssh_username         = "root"
 #  ssh_clear_authorized_keys = true
   storage {
-    disk_size             = var.disk_size_g
+    disk_size             = var.disk_size_g * 1024
     disk_thin_provisioned = true
   }
   username       = var.vcenter_username
