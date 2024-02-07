@@ -8,6 +8,6 @@ network_bridge      = "vmbr0"
 iso_file            = "local:iso/some.iso"
 iso_checksum        = "none"
 cpu_cores           = 2
-memory              = 2048
-disk_size           = "5G"
+memory_g            = 2
+disk_size_g         = 5
 

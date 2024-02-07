@@ -1,6 +1,6 @@
 packer {
   required_plugins {
-    name = {
+    proxmox = {
       version = "~> 1"
       source  = "github.com/hashicorp/proxmox"
     }
@@ -20,7 +20,7 @@ source "proxmox-iso" "microos" {
   os              = "l26"
   bios            = "ovmf"
   cores           = var.cpu_cores
-  memory          = var.memory
+  memory          = var.memory_g * 1024
   scsi_controller = "virtio-scsi-single"
 
   boot_command = ["<home>", "<down>", "<enter>", "<wait20>", "<enter>", ]
@@ -30,7 +30,7 @@ source "proxmox-iso" "microos" {
   #  cloud_init_storage_pool = var.storage_pool
 
   disks {
-    disk_size    = var.disk_size
+    disk_size    = "${var.disk_size_g}G"
     storage_pool = var.storage_pool
     type         = "scsi"
     discard      = true
@@ -67,12 +67,52 @@ source "proxmox-iso" "microos" {
 }
 
 build {
-  sources = ["source.proxmox-iso.microos"]
+  sources = ["source.${var.build_target}-iso.microos"]
 
   provisioner "shell" {
     inline = [
       "echo 'Remove authorized_keys' && rm -vf /root/.ssh/authorized_keys"
     ]
   }
+}
+
+variable "proxmox_url" {
+  type    = string
+  default = null
+}
+
+variable "proxmox_node" {
+  type    = string
+  default = null
+}
+
+variable "proxmox_username" {
+  type    = string
+  default = null
+}
+
+variable "proxmox_token" {
+  type    = string
+  default = null
+}
+
+variable "cpu_cores" {
+  type    = number
+  default = 1
+}
+
+variable "storage_pool" {
+  type    = string
+  default = null
+}
+
+variable "iso_storage_pool" {
+  type    = string
+  default = null
+}
+
+variable "network_bridge" {
+  type    = string
+  default = null
 }
 

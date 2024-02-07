@@ -1,0 +1,15 @@
+vcenter_server      = "my-vcenter.example.com"
+vcenter_username    = ""
+vcenter_password    = ""
+cluster             = ""
+datacenter          = ""
+datastore           = ""
+folder              = ""
+network             = ""
+resource_pool       = ""
+name                = ""
+iso_file            = "[NAME] /path/to/some.iso"
+iso_checksum        = "none"
+cpus                = 1
+memory_g            = 1
+disk_size_g         = 5
