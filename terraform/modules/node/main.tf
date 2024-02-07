@@ -1,4 +1,4 @@
-module "vserver" {
+module "vm" {
   source                 = "../proxmox_vm"
   proxmox_node           = var.proxmox_node
   vm_name                = var.vm_name
@@ -17,7 +17,7 @@ module "vserver" {
   ssh_private_key        = var.ssh_private_key
 }
 
-output "vserver" {
+output "vm" {
   value = module.vserver
 }
 
