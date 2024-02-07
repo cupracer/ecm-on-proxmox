@@ -1,4 +1,3 @@
 ssh_files/*
-openSUSE_MicroOS-selfinstall.proxmox.pkr.hcl
-openSUSE_MicroOS-selfinstall.vsphere.pkr.hcl
+openSUSE_MicroOS-selfinstall.pkr.hcl
 variables.pkrvars.hcl
