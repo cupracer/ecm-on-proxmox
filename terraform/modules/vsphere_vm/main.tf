@@ -50,22 +50,12 @@ data "cloudinit_config" "meta_data" {
   base64_encode = true
 
   part {
-    filename     = "cloud-config-meta.yaml"
+    filename     = "metadata.yaml"
     content_type = "text/cloud-config"
 
-    content = yamlencode({
-      instance_id    = sha1(local.name)
-      local-hostname = local.name
-      network_config = {
-        version = 1
-        config  = [{
-          type    = "physical"
-          name    = "eth0"
-          subnets = [{
-            type = "dhcp"
-          }]
-        }]
-      }
+    content = templatefile("${path.module}/ci_meta_data.yaml.tftpl", {
+      instance_id = sha1(local.name),
+      hostname = local.name,
     })
   }
 }
@@ -75,7 +65,7 @@ data "cloudinit_config" "user_data" {
   base64_encode = true
 
   part {
-    filename     = "cloud-config-user.yaml"
+    filename     = "userdata.yaml"
     content_type = "text/cloud-config"
 
     content = templatefile("${path.module}/ci_user_data.yaml.tftpl", {
@@ -85,7 +75,6 @@ data "cloudinit_config" "user_data" {
     })
   }
 }
-
 
 resource "vsphere_virtual_machine" "vm" {
   name             = local.name

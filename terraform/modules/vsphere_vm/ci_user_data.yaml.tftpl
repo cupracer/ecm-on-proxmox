@@ -1,6 +1,7 @@
 #cloud-config
 
 users:
+  - default
   - name: root
     lock_passwd: ${root_lock_password}
     plain_text_passwd: "${root_plain_password}"
