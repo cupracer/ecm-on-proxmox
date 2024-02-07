@@ -1,34 +1,34 @@
 locals {
   proxmox_node                    = var.proxmox_node
-  vm_name                         = var.vm_name
-  vm_description                  = var.vm_description
-  vm_template                     = var.vm_template
-  vm_cpu_sockets                  = var.vm_cpu_sockets
-  vm_cpu_cores                    = var.vm_cpu_cores
-  vm_memory                       = var.vm_memory
-  vm_disk_size                    = var.vm_disk_size
-  vm_storage_pool                 = var.storage_pool
-  vm_iso_storage_pool             = var.iso_storage_pool
-  vm_network_bridge               = var.network_bridge
-  vm_root_public_keys             = var.vm_root_public_keys
-  vm_ci_root_lock_password        = var.ci_root_lock_password
-  vm_ci_root_plain_password       = var.ci_root_plain_password
+  name                         = var.name
+  description                  = var.description
+  template                     = var.template
+  cpu_sockets                  = var.cpu_sockets
+  cpu_cores                    = var.cpu_cores
+  memory                       = var.memory
+  disk_size                    = var.disk_size
+  storage_pool                 = var.storage_pool
+  iso_storage_pool             = var.iso_storage_pool
+  network_bridge               = var.network_bridge
+  root_public_keys             = var.root_public_keys
+  ci_root_lock_password        = var.ci_root_lock_password
+  ci_root_plain_password       = var.ci_root_plain_password
 }
 
 resource "proxmox_cloud_init_disk" "ci" {
-  name      = local.vm_name
+  name      = local.name
   pve_node  = local.proxmox_node
-  storage   = local.vm_iso_storage_pool
+  storage   = local.iso_storage_pool
 
   meta_data = yamlencode({
-    instance_id    = sha1(local.vm_name)
-    local-hostname = local.vm_name
+    instance_id    = sha1(local.name)
+    local-hostname = local.name
   })
 
   user_data = templatefile("${path.module}/ci_user_data.yaml.tftpl", {
-    root_public_keys = local.vm_root_public_keys,
-    root_lock_password = local.vm_ci_root_lock_password,
-    root_plain_password = local.vm_ci_root_plain_password
+    root_public_keys = local.root_public_keys,
+    root_lock_password = local.ci_root_lock_password,
+    root_plain_password = local.ci_root_plain_password
   })
 
   network_config = yamlencode({
@@ -44,15 +44,16 @@ resource "proxmox_cloud_init_disk" "ci" {
 }
 
 resource "proxmox_vm_qemu" "vm" {
-  name        = local.vm_name
-  desc        = local.vm_description
+  name        = local.name
+  desc        = local.description
   target_node = local.proxmox_node
-  clone       = local.vm_template
+  clone       = local.template
+  full_clone  = false
 
   bios    = "ovmf"
-  sockets = local.vm_cpu_sockets
-  cores   = local.vm_cpu_cores
-  memory  = local.vm_memory
+  sockets = local.cpu_sockets
+  cores   = local.cpu_cores
+  memory  = local.memory
   scsihw  = "virtio-scsi-single"
   os_type = "l26"
   agent   = 1
@@ -61,8 +62,8 @@ resource "proxmox_vm_qemu" "vm" {
     scsi {
       scsi0 {
         disk {
-          storage = local.vm_storage_pool
-          size    = local.vm_disk_size
+          storage = local.storage_pool
+          size    = local.disk_size
           discard = true
           emulatessd = true
         }
@@ -76,7 +77,7 @@ resource "proxmox_vm_qemu" "vm" {
   }
 
   network {
-    bridge = local.vm_network_bridge
+    bridge = local.network_bridge
     model  = "virtio"
   }
 

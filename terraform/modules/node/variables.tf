@@ -6,7 +6,15 @@ variable "vm_name" {
   type = string
 }
 
+variable "fqdn" {
+  type = string
+}
+
 variable "vm_description" {
+  type = string
+}
+
+variable "node_type" {
   type = string
 }
 
@@ -51,11 +59,6 @@ variable "ci_root_lock_password" {
 }
 
 variable "ci_root_plain_password" {
-  type = string
-#  sensitive = true
-}
-
-variable "ssh_private_key" {
   type = string
 #  sensitive = true
 }

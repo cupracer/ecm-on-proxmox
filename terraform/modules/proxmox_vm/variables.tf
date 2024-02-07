@@ -2,31 +2,31 @@ variable "proxmox_node" {
   type = string
 }
 
-variable "vm_name" {
+variable "name" {
   type = string
 }
 
-variable "vm_description" {
+variable "description" {
   type = string
 }
 
-variable "vm_template" {
+variable "template" {
   type = string
 }
 
-variable "vm_cpu_sockets" {
+variable "cpu_sockets" {
   type = number
 }
 
-variable "vm_cpu_cores" {
+variable "cpu_cores" {
   type = number
 }
 
-variable "vm_memory" {
+variable "memory" {
   type = number
 }
 
-variable "vm_disk_size" {
+variable "disk_size" {
   type = number
 }
 
@@ -42,7 +42,7 @@ variable "network_bridge" {
   type = string
 }
 
-variable "vm_root_public_keys" {
+variable "root_public_keys" {
   type = list(string)
 }
 
@@ -52,11 +52,6 @@ variable "ci_root_lock_password" {
 
 variable "ci_root_plain_password" {
   type = string
-#  sensitive = true
-}
-
-variable "ssh_private_key" {
-  type = string
-#  sensitive = true
+  sensitive = true
 }
 
