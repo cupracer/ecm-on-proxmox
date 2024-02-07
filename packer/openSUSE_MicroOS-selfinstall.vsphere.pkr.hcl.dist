@@ -22,7 +22,7 @@ source "vsphere-iso" "microos" {
   guest_os_type        = "sles15_64Guest"
   insecure_connection  = "true"
   iso_checksum         = var.iso_checksum
-  iso_paths            = var.iso_file
+  iso_paths            = [var.iso_file]
   network_adapters {
     network      = var.network
     network_card = "vmxnet3"
