@@ -21,7 +21,7 @@ locals {
         "cpu_sockets"  = 1,
         "cpu_cores"    = 2,
         "memory_m"     = 8192,
-        "disk_size_gb" = 60,
+        "disk_size_gb" = 30,
       }
     }
 
@@ -34,7 +34,7 @@ locals {
         "cpu_sockets"  = 1,
         "cpu_cores"    = 2,
         "memory_m"     = 4096,
-        "disk_size_gb" = 60,
+        "disk_size_gb" = 30,
       }
   }
 
