@@ -1,11 +1,10 @@
 locals {
-  cluster_prefix          = "c1"
-  hostname_base           = "down"
-  dnsdomain               = "int.team-schulte.com"
-  num_nodes               = 2
-  num_control_planes      = 1 
-
-  root_public_keys = [ for key in try(split("\n", file(var.root_authorized_keys_file)), []) : key if key != "" ]
+  cluster_prefix          = var.cluster_prefix
+  hostname_base           = var.hostname_base
+  dnsdomain               = var.dnsdomain
+  num_nodes               = var.num_nodes
+  num_control_planes      = var.num_control_planes
+  root_public_keys        = [ for key in try(split("\n", file(var.root_authorized_keys_file)), []) : key if key != "" ]
 
   #### AUTOMATED VALUES BELOW ####
 
@@ -22,7 +21,7 @@ locals {
         "cpu_sockets"  = 1,
         "cpu_cores"    = 2,
         "memory_m"     = 8192,
-        "disk_size_gb" = 20,
+        "disk_size_gb" = 60,
       }
     }
 
@@ -35,7 +34,7 @@ locals {
         "cpu_sockets"  = 1,
         "cpu_cores"    = 2,
         "memory_m"     = 4096,
-        "disk_size_gb" = 40,
+        "disk_size_gb" = 60,
       }
   }
 

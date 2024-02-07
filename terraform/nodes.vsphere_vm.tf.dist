@@ -1,0 +1,106 @@
+terraform {
+  required_providers {
+    vsphere = {
+      source = "hashicorp/vsphere"
+      version = "2.3.1"
+    }
+  }
+}
+
+provider "vsphere" {
+  user                 = var.vsphere_user
+  password             = var.vsphere_password
+  vsphere_server       = var.vsphere_server
+  allow_unverified_ssl = var.vsphere_allow_unverified_ssl
+}
+
+locals {
+  datacenter             = var.vsphere_datacenter
+  compute_cluster        = var.vsphere_compute_cluster
+  datastore              = var.vsphere_datastore
+  resource_pool          = var.vsphere_resource_pool
+  network_cluster        = var.vsphere_network_cluster
+  template               = var.vsphere_template
+  folder                 = var.vsphere_folder
+  ci_root_lock_password  = var.vsphere_ci_root_lock_password
+  ci_root_plain_password = var.vsphere_ci_root_plain_password 
+}
+
+
+module "nodes" {
+  source                 = "./modules/vsphere_vm"
+  for_each               = local.cluster_nodes_map
+
+  datacenter             = local.datacenter
+  compute_cluster        = local.compute_cluster
+  datastore              = local.datastore
+  resource_pool          = local.resource_pool
+  network_cluster        = local.network_cluster
+  template               = local.template
+  folder                 = local.folder
+
+  name                   = each.key
+  fqdn                   = each.value.fqdn
+  node_type              = each.value.node_type
+  cpus                   = each.value.cpu_cores
+  memory_g               = each.value.memory_m / 1024
+  disk_size_g            = each.value.disk_size_gb
+
+  root_public_keys       = local.root_public_keys
+  ci_root_lock_password  = local.ci_root_lock_password
+  ci_root_plain_password = local.ci_root_plain_password
+}
+
+variable "vsphere_user" {
+  type = string
+}
+
+variable "vsphere_password" {
+  type = string
+}
+
+variable "vsphere_server" {
+  type = string
+}
+
+variable "vsphere_allow_unverified_ssl" {
+  type = bool
+}
+
+variable "vsphere_datacenter" {
+  type = string
+}
+
+variable "vsphere_compute_cluster" {
+  type = string
+}
+
+variable "vsphere_datastore" {
+  type = string
+}
+
+variable "vsphere_resource_pool" {
+  type = string
+}
+
+variable "vsphere_network_cluster" {
+  type = string
+}
+
+variable "vsphere_template" {
+  type = string
+}
+
+variable "vsphere_folder" {
+  type = string
+}
+
+variable "vsphere_ci_root_lock_password" {
+  type = bool
+}
+
+variable "vsphere_ci_root_plain_password" {
+  type = string
+  sensitive = true
+}
+

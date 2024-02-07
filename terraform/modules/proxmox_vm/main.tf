@@ -1,5 +1,5 @@
 locals {
-  proxmox_node                    = var.proxmox_node
+  proxmox_node                 = var.proxmox_node
   name                         = var.name
   description                  = var.description
   template                     = var.template

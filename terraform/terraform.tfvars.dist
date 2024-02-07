@@ -1,4 +1,9 @@
 # COMMON settings
+cluster_prefix            = "c1"
+hostname_base             = "cluster"
+dnsdomain                 = "example.com"
+num_nodes                 = 2
+num_control_planes        = 1
 root_authorized_keys_file = null
 
 # PROXMOX settings
@@ -12,4 +17,19 @@ proxmox_iso_storage_pool       = "local"
 proxmox_network_bridge         = "vmbr0"
 proxmox_ci_root_lock_password  = true
 proxmox_ci_root_plain_password = "changeme"
+
+# VSPHERE settings
+vsphere_user = 
+vsphere_password = 
+vsphere_server = 
+vsphere_allow_unverified_ssl = 
+vsphere_datacenter = 
+vsphere_compute_cluster = 
+vsphere_datastore = 
+vsphere_resource_pool = 
+vsphere_network_cluster = 
+vsphere_template = 
+vsphere_folder = 
+vsphere_ci_root_lock_password = 
+vsphere_ci_root_plain_password = 
 

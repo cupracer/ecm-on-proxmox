@@ -2,3 +2,6 @@ terraform.tfstate*
 .terraform*
 terraform.tfvars
 root_authorized_keys
+nodes.proxmox_vm.tf
+nodes.vsphere_vm.tf
+
