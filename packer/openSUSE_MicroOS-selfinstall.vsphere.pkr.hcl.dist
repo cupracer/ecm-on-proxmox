@@ -42,6 +42,9 @@ source "vsphere-iso" "microos" {
   vcenter_server = var.vcenter_server
   vm_name        = var.name
   vm_version     = 15
+
+  cd_files = ["./combustion"]
+  cd_label = "combustion"
 }
 
 build {
