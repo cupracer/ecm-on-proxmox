@@ -67,7 +67,7 @@ source "proxmox-iso" "microos" {
 }
 
 build {
-  sources = ["source.${var.build_target}-iso.microos"]
+  sources = ["source.proxmox-iso.microos"]
 
   provisioner "shell" {
     inline = [
