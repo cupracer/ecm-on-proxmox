@@ -15,6 +15,7 @@ root_authorized_keys_file = null
 #proxmox_storage_pool           = ""
 #proxmox_iso_storage_pool       = ""
 #proxmox_network_bridge         = ""
+#proxmox_template               = ""
 #proxmox_ci_root_lock_password  = true
 #proxmox_ci_root_plain_password = ""
 

@@ -27,6 +27,7 @@ locals {
   storage_pool           = var.proxmox_storage_pool
   iso_storage_pool       = var.proxmox_iso_storage_pool
   network_bridge         = var.proxmox_network_bridge
+  template               = var.proxmox_template
   ci_root_lock_password  = var.proxmox_ci_root_lock_password
   ci_root_plain_password = var.proxmox_ci_root_plain_password 
 }
@@ -37,7 +38,7 @@ module "nodes" {
   for_each               = local.cluster_nodes_map
 
   proxmox_node           = local.proxmox_node
-  template               = "opensuse-microos"
+  template               = local.template
   description            = "openSUSE MicroOS - Cluster ${local.cluster_name}"
 
   name                   = each.key
@@ -87,6 +88,10 @@ variable "proxmox_iso_storage_pool" {
 }
 
 variable "proxmox_network_bridge" {
+  type = string
+}
+
+variable "proxmox_template" {
   type = string
 }
 
