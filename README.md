@@ -12,7 +12,11 @@ cp openSUSE_MicroOS-selfinstall.VARIANT.pkr.hcl.dist openSUSE_MicroOS-selfinstal
 cp variables.pkrvars.proxmox.VARIANT.dist variables.pkrvars.hcl
 ```
 2. Adjust the config values in `variables.pkrvars.hcl` accordingly.
-3. Create an SSH key-pair to let Packer access the temporary system during the build process:
+3. Initialize Packer:
+```shell
+packer init
+```
+4. Create an SSH key-pair to let Packer access the temporary system during the build process:
 ```shell
 ssh-keygen -t ed25519 -C "Packer" -f ./ssh_files/packer
 ```
@@ -37,6 +41,10 @@ cp nodes.VARIANT_vm.tf.dist nodes.tf
 cp terraform.tfvars.dist terraform.tfvars
 ```
 3. Uncomment all settings for the chosen platform and set their values in `terraform.tfvars`.
+4. Initialize Terraform:
+```shell
+terraform init
+```
 
 ### Build
 ```shell
