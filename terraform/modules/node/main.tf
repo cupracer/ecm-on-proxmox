@@ -17,7 +17,3 @@ module "vm" {
   ssh_private_key        = var.ssh_private_key
 }
 
-output "vm" {
-  value = module.vserver
-}
-
