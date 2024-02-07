@@ -6,8 +6,17 @@ variable "name" {
   type = string
 }
 
+variable "fqdn" {
+  type = string
+}
+
 variable "description" {
   type = string
+}
+
+variable "node_type" {
+  type    = string
+  default = null
 }
 
 variable "template" {
