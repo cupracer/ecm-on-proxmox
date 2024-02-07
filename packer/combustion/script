@@ -19,7 +19,7 @@ ln -fs /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
 # Install additional software
 zypper --non-interactive install --recommends \
-    qemu-guest-agent cloud-init \
+    qemu-guest-agent open-vm-tools cloud-init \
     iptables bind-utils mtr tcpdump wireguard-tools \
     restorecond setools-console \
     open-iscsi nfs-client cifs-utils \
