@@ -25,7 +25,7 @@ resource "proxmox_cloud_init_disk" "ci" {
     local-hostname = local.vm_name
   })
 
-  user_data = templatefile("ci_user_data.yaml.tftpl", {
+  user_data = templatefile("${path.module}/ci_user_data.yaml.tftpl", {
     root_public_keys = local.vm_root_public_keys,
     root_lock_password = local.vm_ci_root_lock_password,
     root_plain_password = local.vm_ci_root_plain_password
