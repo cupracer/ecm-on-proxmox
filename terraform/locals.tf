@@ -4,7 +4,7 @@ locals {
   dnsdomain               = var.dnsdomain
   num_nodes               = var.num_nodes
   num_control_planes      = var.num_control_planes
-  root_public_keys        = [ for key in try(split("\n", file(var.root_authorized_keys_file)), []) : key if key != "" ]
+  root_public_keys        = [ for key in split("\n", file(var.root_authorized_keys_file)) : key if key != "" ]
 
   #### AUTOMATED VALUES BELOW ####
 
