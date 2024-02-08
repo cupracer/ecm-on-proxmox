@@ -22,8 +22,8 @@ locals {
   network_cluster        = var.vsphere_network_cluster
   template               = var.vsphere_template
   folder                 = var.vsphere_folder
-  ci_root_lock_password  = var.vsphere_ci_root_lock_password
-  ci_root_plain_password = var.vsphere_ci_root_plain_password 
+  ci_root_lock_password  = var.node_root_lock_password
+  ci_root_plain_password = var.node_root_plain_password 
 }
 
 
@@ -93,14 +93,5 @@ variable "vsphere_template" {
 
 variable "vsphere_folder" {
   type = string
-}
-
-variable "vsphere_ci_root_lock_password" {
-  type = bool
-}
-
-variable "vsphere_ci_root_plain_password" {
-  type = string
-  sensitive = true
 }
 

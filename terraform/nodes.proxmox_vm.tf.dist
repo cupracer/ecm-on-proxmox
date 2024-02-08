@@ -28,8 +28,8 @@ locals {
   iso_storage_pool       = var.proxmox_iso_storage_pool
   network_bridge         = var.proxmox_network_bridge
   template               = var.proxmox_template
-  ci_root_lock_password  = var.proxmox_ci_root_lock_password
-  ci_root_plain_password = var.proxmox_ci_root_plain_password 
+  ci_root_lock_password  = var.node_root_lock_password
+  ci_root_plain_password = var.node_root_plain_password 
 }
 
 
@@ -93,14 +93,5 @@ variable "proxmox_network_bridge" {
 
 variable "proxmox_template" {
   type = string
-}
-
-variable "proxmox_ci_root_lock_password" {
-  type = bool
-}
-
-variable "proxmox_ci_root_plain_password" {
-  type = string
-  sensitive = true
 }
 

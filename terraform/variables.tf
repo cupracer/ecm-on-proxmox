@@ -23,3 +23,12 @@ variable "root_authorized_keys_file" {
   type = string
 }
 
+variable "node_root_lock_password" {
+  type = bool
+}
+
+variable "node_root_plain_password" {
+  type      = string
+  sensitive = true
+}
+

@@ -5,6 +5,8 @@ dnsdomain                 = "example.com"
 num_nodes                 = 2
 num_control_planes        = 1
 root_authorized_keys_file = null
+node_root_lock_password   = true
+node_root_plain_password  = "changeme"
 
 # PROXMOX settings
 #proxmox_api_url                = "https://changeme.example.com:8006/api2/json"
@@ -16,8 +18,6 @@ root_authorized_keys_file = null
 #proxmox_iso_storage_pool       = ""
 #proxmox_network_bridge         = ""
 #proxmox_template               = ""
-#proxmox_ci_root_lock_password  = true
-#proxmox_ci_root_plain_password = ""
 
 # VSPHERE settings
 #vsphere_user                   = ""
@@ -31,6 +31,4 @@ root_authorized_keys_file = null
 #vsphere_network_cluster        = ""
 #vsphere_template               = ""
 #vsphere_folder                 = ""
-#vsphere_ci_root_lock_password  = true
-#vsphere_ci_root_plain_password = ""
 
