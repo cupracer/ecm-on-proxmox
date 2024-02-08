@@ -18,10 +18,6 @@ output "node_type" {
   value = var.node_type
 }
 
-output "cpu_sockets" {
-  value = proxmox_vm_qemu.vm.sockets
-}
-
 output "cpu_cores" {
   value = proxmox_vm_qemu.vm.cores
 }

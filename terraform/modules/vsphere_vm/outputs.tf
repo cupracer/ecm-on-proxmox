@@ -18,10 +18,6 @@ output "node_type" {
   value = var.node_type
 }
 
-output "cpu_sockets" {
-  value = "TODO"
-}
-
 output "cpu_cores" {
   value = "TODO"
 }

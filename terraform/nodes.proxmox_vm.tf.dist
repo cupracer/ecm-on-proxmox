@@ -44,7 +44,6 @@ module "nodes" {
   name                   = each.key
   fqdn                   = each.value.fqdn
   node_type              = each.value.node_type
-  cpu_sockets            = each.value.cpu_sockets
   cpu_cores              = each.value.cpu_cores
   memory                 = each.value.memory_m
   disk_size              = each.value.disk_size_gb

@@ -23,10 +23,6 @@ variable "template" {
   type = string
 }
 
-variable "cpu_sockets" {
-  type = number
-}
-
 variable "cpu_cores" {
   type = number
 }

@@ -18,7 +18,6 @@ locals {
       hostname => {
         "fqdn"         = "${hostname}.${local.dnsdomain}",
         "node_type"    = "control_plane",
-        "cpu_sockets"  = 1,
         "cpu_cores"    = 2,
         "memory_m"     = 8192,
         "disk_size_gb" = 30,
@@ -31,7 +30,6 @@ locals {
       hostname => {
         "fqdn"         = "${hostname}.${local.dnsdomain}",
         "node_type"    = "worker",
-        "cpu_sockets"  = 1,
         "cpu_cores"    = 2,
         "memory_m"     = 4096,
         "disk_size_gb" = 30,

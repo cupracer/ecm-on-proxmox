@@ -3,7 +3,6 @@ locals {
   name                         = var.name
   description                  = var.description
   template                     = var.template
-  cpu_sockets                  = var.cpu_sockets
   cpu_cores                    = var.cpu_cores
   memory                       = var.memory
   disk_size                    = var.disk_size
@@ -51,7 +50,7 @@ resource "proxmox_vm_qemu" "vm" {
   full_clone  = false
 
   bios    = "ovmf"
-  sockets = local.cpu_sockets
+  sockets = 1
   cores   = local.cpu_cores
   memory  = local.memory
   scsihw  = "virtio-scsi-single"
