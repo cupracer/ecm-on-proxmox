@@ -11,7 +11,7 @@ variable "dnsdomain" {
   type = string
 }
 
-variable "num_gateways" {
+variable "num_proxies" {
   type = number
 }
 
