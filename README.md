@@ -14,7 +14,7 @@ cp variables.pkrvars.proxmox.VARIANT.dist variables.pkrvars.hcl
 2. Adjust the config values in `variables.pkrvars.hcl` accordingly.
 3. Initialize Packer:
 ```shell
-packer init
+packer init openSUSE_MicroOS-selfinstall.pkr.hcl
 ```
 4. Create an SSH key-pair to let Packer access the temporary system during the build process:
 ```shell
