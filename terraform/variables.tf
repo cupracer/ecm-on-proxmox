@@ -23,6 +23,10 @@ variable "num_control_planes" {
   type = number
 }
 
+variable "root_ssh_private_key_file" {
+  type = string
+}
+
 variable "root_authorized_keys_file" {
   type = string
 }

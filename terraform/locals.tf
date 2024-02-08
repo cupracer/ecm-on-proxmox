@@ -8,6 +8,7 @@ locals {
   num_control_planes      = var.num_control_planes
   
   root_public_keys        = [ for key in split("\n", file(var.root_authorized_keys_file)) : key if key != "" ]
+  root_private_key        = file(var.root_ssh_private_key_file)
 
   #### AUTOMATED VALUES BELOW ####
 
@@ -57,5 +58,11 @@ locals {
   primary_master_hostname = "${local.cluster_node_hostnames[0]}"
   primary_master_fqdn     = "${local.primary_master_hostname}.${local.dnsdomain}"
   primary_master_host     = module.nodes[local.primary_master_hostname].default_ipv4_address
+
+  #### LIKE OUTPUTS ####
+
+  proxy_nodes         = { for i, n in module.nodes : i => n if n.node_type == "proxy" }
+  control_plane_nodes = { for i, n in module.nodes : i => n if n.node_type == "control_plane" }
+  worker_nodes        = { for i, n in module.nodes : i => n if n.node_type == "worker" }
 }
 

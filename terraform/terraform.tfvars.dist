@@ -2,10 +2,11 @@
 cluster_prefix            = "c1"
 hostname_base             = "node"
 dnsdomain                 = "example.com"
-num_proxies              = 1
+num_proxies               = 1
 num_cluster_nodes         = 2
 num_control_planes        = 1
 root_authorized_keys_file = null
+root_ssh_private_key_file = null
 node_root_lock_password   = true
 node_root_plain_password  = "changeme"
 
