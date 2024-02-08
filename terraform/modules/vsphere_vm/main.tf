@@ -45,20 +45,20 @@ data "vsphere_virtual_machine" "template" {
   datacenter_id = data.vsphere_datacenter.datacenter.id
 }
 
-data "cloudinit_config" "meta_data" {
-  gzip          = false
-  base64_encode = true
-
-  part {
-    filename     = "metadata.yaml"
-    content_type = "text/cloud-config"
-
-    content = templatefile("${path.module}/ci_meta_data.yaml.tftpl", {
-      instance_id = sha1(local.name),
-      hostname = local.name,
-    })
-  }
-}
+#data "cloudinit_config" "meta_data" {
+#  gzip          = false
+#  base64_encode = true
+#
+#  part {
+#    filename     = "metadata.yaml"
+#    content_type = "text/cloud-config"
+#
+#    content = templatefile("${path.module}/ci_meta_data.yaml.tftpl", {
+#      instance_id = sha1(local.name),
+#      hostname = local.name,
+#    })
+#  }
+#}
 
 data "cloudinit_config" "user_data" {
   gzip          = false
@@ -102,8 +102,8 @@ resource "vsphere_virtual_machine" "vm" {
   }
 
   extra_config = {
-    "guestinfo.metadata.encoding" = "base64"
-    "guestinfo.metadata"          = data.cloudinit_config.meta_data.rendered
+#    "guestinfo.metadata.encoding" = "base64"
+#    "guestinfo.metadata"          = data.cloudinit_config.meta_data.rendered
     "guestinfo.userdata.encoding" = "base64"
     "guestinfo.userdata"          = data.cloudinit_config.user_data.rendered
   }
