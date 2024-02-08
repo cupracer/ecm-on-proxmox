@@ -69,6 +69,7 @@ data "cloudinit_config" "user_data" {
     content_type = "text/cloud-config"
 
     content = templatefile("${path.module}/ci_user_data.yaml.tftpl", {
+      hostname = local.name,
       root_public_keys = local.root_public_keys,
       root_lock_password = local.ci_root_lock_password,
       root_plain_password = local.ci_root_plain_password
