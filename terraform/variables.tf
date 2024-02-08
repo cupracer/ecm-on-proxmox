@@ -11,7 +11,7 @@ variable "dnsdomain" {
   type = string
 }
 
-variable "num_nodes" {
+variable "num_cluster_nodes" {
   type = number
 }
 

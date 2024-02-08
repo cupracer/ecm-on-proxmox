@@ -2,7 +2,7 @@
 cluster_prefix            = "c1"
 hostname_base             = "cluster"
 dnsdomain                 = "example.com"
-num_nodes                 = 2
+num_cluster_nodes         = 2
 num_control_planes        = 1
 root_authorized_keys_file = null
 node_root_lock_password   = true
