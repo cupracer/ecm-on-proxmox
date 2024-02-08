@@ -1,4 +1,25 @@
+resource "ssh_resource" "setup_nginx_config" {
+  for_each     = var.nodes
+
+  host         = each.value.default_ipv4_address
+  port         = 22
+  user         = "root"
+  private_key  = var.ssh_private_key
+
+  file {
+    destination = "/etc/nginx.conf"
+    owner = "root"
+    group = "root"
+    permissions = "0644"
+    content = templatefile("${path.module}/nginx.conf.tftpl", {
+      node_control_planes_fqdn = var.control_planes_fqdn
+    })
+  }
+}
+
 resource "ssh_resource" "setup_podman_nginx" {
+  depends_on   = [ ssh_resource.setup_nginx_config, ]
+
   for_each     = var.nodes
 
   host         = each.value.default_ipv4_address
@@ -18,7 +39,7 @@ resource "ssh_resource" "setup_podman_nginx" {
 
       [Service]
       Type=exec
-      ExecStart=/usr/bin/podman run --rm -a stdout --name podman-nginx -p 80:80 -p 443:443 -p 8080:8080 docker.io/library/nginx
+      ExecStart=/usr/bin/podman run --rm -a stdout --name podman-nginx -p 443:443 -p 6443:6443 -v /etc/nginx.conf:/etc/nginx/nginx.conf:ro registry.suse.com/suse/nginx
       ExecStop=/usr/bin/sh -c 'while kill $MAINPID 2>/dev/null; do sleep 1; done'
       TimeoutStopSec=20
 

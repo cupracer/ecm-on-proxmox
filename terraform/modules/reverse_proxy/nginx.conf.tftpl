@@ -1,0 +1,38 @@
+worker_processes  4;
+worker_rlimit_nofile 40000;
+
+load_module lib64/nginx/modules/ngx_stream_module.so;
+#error_log  /var/log/nginx/error.log;
+
+events {
+  worker_connections  8192;
+}
+
+stream {
+  upstream k8s_https {
+    least_conn;
+
+    %{ for fqdn in node_control_planes_fqdn  ~}
+    server ${fqdn}:6443 max_fails=1 fail_timeout=3s;
+    %{ endfor ~}
+  }
+
+  server {
+    listen 6443;
+    proxy_pass k8s_https;
+  }
+
+  upstream rancher_https {
+    least_conn;
+
+    %{ for fqdn in node_control_planes_fqdn  ~}
+    server ${fqdn}:443 max_fails=1 fail_timeout=3s;
+    %{ endfor ~}
+  }
+
+  server {
+    listen 443;
+    proxy_pass rancher_https;
+  }
+}
+
