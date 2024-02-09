@@ -52,3 +52,7 @@ variable "metallb_version" {
   type = string
 }
 
+variable "argocd_version" {
+  type = string
+}
+

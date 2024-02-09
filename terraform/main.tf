@@ -47,3 +47,10 @@ module "metallb" {
   metallb_version = var.metallb_version
 }
 
+module "argocd" {
+  depends_on = [ module.k3s ]
+  count      = var.argocd_version != null ? 1 : 0
+  source     = "./modules/argocd"
+
+  argocd_version = var.argocd_version
+}
