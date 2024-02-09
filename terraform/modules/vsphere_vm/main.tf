@@ -110,5 +110,12 @@ resource "vsphere_virtual_machine" "vm" {
     "guestinfo.userdata.encoding" = "base64"
     "guestinfo.userdata"          = data.cloudinit_config.user_data.rendered
   }
+
+  # WORKAROUND FOR: https://github.com/hashicorp/terraform-provider-vsphere/issues/1902
+  lifecycle {
+    ignore_changes = [
+      ept_rvi_mode,
+      hv_mode,
+    ]
 }
 
