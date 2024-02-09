@@ -50,4 +50,8 @@ terraform init
 ```shell
 terraform apply
 ```
+If there's an issue when creating too many VM's at the same time with Terraform and Proxmox, try to limit parallel activities:
+```shell
+terraform apply -parallelism=1
+```
 
