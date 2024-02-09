@@ -117,5 +117,6 @@ resource "vsphere_virtual_machine" "vm" {
       ept_rvi_mode,
       hv_mode,
     ]
+  }
 }
 
