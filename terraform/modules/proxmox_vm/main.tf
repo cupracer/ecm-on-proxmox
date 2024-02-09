@@ -54,7 +54,7 @@ resource "proxmox_vm_qemu" "vm" {
   cores   = local.cpu_cores
   memory  = local.memory
   scsihw  = "virtio-scsi-single"
-  os_type = "l26"
+  qemu_os = "l26"
   agent   = 1
 
   disks {
