@@ -39,3 +39,11 @@ module "kured" {
   kured_version       = var.kured_version
 }
 
+module "metallb" {
+  depends_on = [ module.k3s ]
+  count      = var.metallb_version != null ? 1 : 0
+  source     = "./modules/metallb"
+
+  metallb_version = var.metallb_version
+}
+

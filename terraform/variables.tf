@@ -48,3 +48,7 @@ variable "kured_version" {
   type = string
 }
 
+variable "metallb_version" {
+  type = string
+}
+
