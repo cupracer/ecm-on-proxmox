@@ -44,3 +44,7 @@ variable "k3s_version" {
   type = string
 }
 
+variable "kured_version" {
+  type = string
+}
+

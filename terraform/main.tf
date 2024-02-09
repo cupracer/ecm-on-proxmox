@@ -1,4 +1,6 @@
 module "proxies" {
+  depends_on = [ module.nodes ]
+
   source = "./modules/reverse_proxy"
 
   ssh_private_key = local.root_private_key
@@ -7,6 +9,8 @@ module "proxies" {
 }
 
 module "k3s" {
+  depends_on = [ module.proxies ]
+
   source = "./modules/k3s"
 
   ssh_private_key = local.root_private_key
@@ -18,5 +22,24 @@ module "k3s" {
   primary_master_fqdn = local.primary_master_fqdn
   primary_master_host = local.primary_master_host
   k3s_version = var.k3s_version
+}
+
+provider "helm" {
+  kubernetes {
+    config_path = module.k3s.kube_config_server_yaml.filename
+  }
+}
+
+module "kured" {
+  depends_on = [ module.k3s ]
+
+  source = "./modules/kured"
+
+  count = var.kured_version != null ? 1 : 0
+
+  ssh_private_key = local.root_private_key
+  control_plane_nodes = local.control_plane_nodes
+  worker_nodes = local.worker_nodes
+  kured_version = var.kured_version
 }
 
