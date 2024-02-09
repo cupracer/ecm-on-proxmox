@@ -11,7 +11,7 @@ output "fqdn" {
 }
 
 output "description" {
-  value = "TODO"
+  value = vsphere_virtual_machine.vm.annotation
 }
 
 output "node_type" {
@@ -19,14 +19,14 @@ output "node_type" {
 }
 
 output "cpu_cores" {
-  value = "TODO"
+  value = vsphere_virtual_machine.vm.num_cpus
 }
 
 output "memory" {
-  value = "TODO"
+  value = vsphere_virtual_machine.vm.memory
 }
 
 output "default_ipv4_address" {
-  value = "TODO"
+  value = vsphere_virtual_machine.vm.default_ip_address
 }
 
