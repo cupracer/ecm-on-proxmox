@@ -2,19 +2,22 @@ worker_processes  4;
 worker_rlimit_nofile 40000;
 
 load_module lib64/nginx/modules/ngx_stream_module.so;
-#error_log  /var/log/nginx/error.log;
+error_log /var/log/nginx/error.log warn;
 
 events {
   worker_connections  8192;
 }
 
 stream {
+  log_format basic '$remote_addr [$time_local] $protocol $status $bytes_sent $bytes_received $session_time';
+  access_log /var/log/nginx/access.log basic;
+
   upstream k8s_https {
     least_conn;
 
-    %{ for fqdn in node_control_planes_fqdn  ~}
+    %{~ for fqdn in node_control_planes_fqdn ~}
     server ${fqdn}:6443 max_fails=1 fail_timeout=3s;
-    %{ endfor ~}
+    %{~ endfor ~}
   }
 
   server {
@@ -25,9 +28,9 @@ stream {
   upstream rancher_https {
     least_conn;
 
-    %{ for fqdn in node_control_planes_fqdn  ~}
+    %{~ for fqdn in node_control_planes_fqdn ~}
     server ${fqdn}:443 max_fails=1 fail_timeout=3s;
-    %{ endfor ~}
+    %{~ endfor ~}
   }
 
   server {
