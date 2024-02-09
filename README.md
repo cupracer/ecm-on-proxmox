@@ -1,4 +1,19 @@
-# ECM on Proxmox (and others)
+# Attempts at cross-platform orchestration
+> [!CAUTION]
+> HEAVILY WORK IN PROGRESS - DO NOT USE
+
+## Overview
+
+#### Features
+- Hashicorp Packer
+- Hashicorp Terraform
+
+#### Target platforms
+- Proxmox (QEMU)
+- vSphere
+
+#### Guest OS
+- openSUSE MicroOS
 
 ## Packer
 ```shell
