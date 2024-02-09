@@ -69,7 +69,7 @@ EOT
   }
 
   commands = [<<-EOT
-    curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="v1.26.8+k3s1" INSTALL_K3S_SKIP_START=true INSTALL_K3S_SKIP_SELINUX_RPM=true INSTALL_K3S_SELINUX_WARN=true sh -s - server > /var/log/curl_install_k3s.log 2>&1
+    curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="${var.k3s_version}" INSTALL_K3S_SKIP_START=true INSTALL_K3S_SKIP_SELINUX_RPM=true INSTALL_K3S_SELINUX_WARN=true sh -s - server > /var/log/curl_install_k3s.log 2>&1
 
     transactional-update --no-selfupdate --continue shell <<< "
       zypper --gpg-auto-import-keys install -y cri-tools kubernetes-client llvm clang"
@@ -139,7 +139,7 @@ EOT
 
   commands = [<<-EOT
     curl -sfL https://get.k3s.io | \
-      INSTALL_K3S_VERSION="v1.26.8+k3s1" \
+      INSTALL_K3S_VERSION="${var.k3s_version}" \
       K3S_URL="https://${var.primary_master_fqdn}:6443" \
       K3S_TOKEN="${local.cluster_token}" \
       INSTALL_K3S_SKIP_START=true \

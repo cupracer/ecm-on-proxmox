@@ -17,5 +17,6 @@ module "k3s" {
   set_taints = true # TODO: MAKE CONFIGURABLE
   primary_master_fqdn = local.primary_master_fqdn
   primary_master_host = local.primary_master_host
+  k3s_version = var.k3s_version
 }
 

@@ -31,3 +31,7 @@ variable "primary_master_host" {
   type = string
 }
 
+variable "k3s_version" {
+  type = string
+}
+

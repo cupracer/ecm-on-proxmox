@@ -40,3 +40,7 @@ variable "node_root_plain_password" {
   sensitive = true
 }
 
+variable "k3s_version" {
+  type = string
+}
+
