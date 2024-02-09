@@ -10,8 +10,8 @@ module "proxies" {
 
 module "k3s" {
   depends_on = [ module.proxies ]
-
-  source = "./modules/k3s"
+  count      = var.k3s_version != null ? 1 : 0
+  source     = "./modules/k3s"
 
   ssh_private_key = local.root_private_key
   proxy_nodes = local.proxy_nodes
@@ -32,10 +32,8 @@ provider "helm" {
 
 module "kured" {
   depends_on = [ module.k3s ]
-
-  source = "./modules/kured"
-
-  count = var.kured_version != null ? 1 : 0
+  count      = var.kured_version != null ? 1 : 0
+  source     = "./modules/kured"
 
   ssh_private_key = local.root_private_key
   control_plane_nodes = local.control_plane_nodes
