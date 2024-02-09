@@ -2,6 +2,10 @@ variable "name" {
   type        = string
 }
 
+variable "description" {
+  type = string
+}
+
 variable "fqdn" {
   type = string
 }

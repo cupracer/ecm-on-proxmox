@@ -1,5 +1,6 @@
 locals {
   name = var.name
+  description                  = var.description
   datacenter = var.datacenter
   compute_cluster = var.compute_cluster
   datastore = var.datastore
@@ -79,6 +80,7 @@ data "cloudinit_config" "user_data" {
 
 resource "vsphere_virtual_machine" "vm" {
   name             = local.name
+  annotation       = local.description
   resource_pool_id = data.vsphere_resource_pool.default.id
   datastore_id     = data.vsphere_datastore.datastore.id
   folder           = local.folder

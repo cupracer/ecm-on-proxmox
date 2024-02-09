@@ -40,6 +40,7 @@ module "nodes" {
   folder                 = local.folder
 
   name                   = each.key
+  description            = "openSUSE MicroOS - Cluster ${local.cluster_name}"
   fqdn                   = each.value.fqdn
   node_type              = each.value.node_type
   cpus                   = each.value.cpu_cores
