@@ -7,7 +7,7 @@ locals {
   resource_pool = var.resource_pool
   network_cluster = var.network_cluster
   template = var.template
-  folder = "vm/${var.folder}"
+  folder = "${var.folder}"
   cpus = var.cpus
   memory_g = var.memory_g
   disk_size_g = var.disk_size_g
