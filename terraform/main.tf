@@ -53,4 +53,14 @@ module "argocd" {
   source     = "./modules/argocd"
 
   argocd_version = var.argocd_version
+  service_type   = "ClusterIP"
 }
+
+module "traefik" {
+  depends_on = [ module.k3s ]
+  count      = var.traefik_version != null ? 1 : 0
+  source     = "./modules/traefik"
+
+  traefik_version = var.traefik_version
+}
+

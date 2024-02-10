@@ -45,14 +45,22 @@ variable "k3s_version" {
 }
 
 variable "kured_version" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "metallb_version" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "argocd_version" {
-  type = string
+  type    = string
+  default = null
+}
+
+variable "traefik_version" {
+  type    = string
+  default = null
 }
 
