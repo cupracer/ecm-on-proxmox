@@ -3,8 +3,8 @@ token: ${cluster_token}
 disable-cloud-controller: true
 disable:
   - "local-storage"
-  # - "servicelb"
-  # - "traefik"
+  - "servicelb"
+  - "traefik"
 tls-san:
   %{~ for fqdn in proxy_fqdns ~}
   - "${fqdn}"
