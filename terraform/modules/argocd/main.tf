@@ -5,5 +5,13 @@ resource "helm_release" "argocd" {
   create_namespace = true
   wait             = true
   wait_for_jobs    = true
+
+  values = [
+    <<EOT
+server:
+  service:
+    type: LoadBalancer
+  EOT
+  ]
 }
 
