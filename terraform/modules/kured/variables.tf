@@ -10,7 +10,7 @@ variable "ssh_private_key" {
   type = string
 }
 
-variable "kured_version" {
+variable "kured_chart_version" {
   type = string
 }
 

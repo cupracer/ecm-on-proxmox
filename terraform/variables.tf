@@ -44,22 +44,22 @@ variable "k3s_version" {
   type = string
 }
 
-variable "kured_version" {
+variable "kured_chart_version" {
   type    = string
   default = null
 }
 
-variable "metallb_version" {
+variable "metallb_chart_version" {
   type    = string
   default = null
 }
 
-variable "argocd_version" {
+variable "argocd_chart_version" {
   type    = string
   default = null
 }
 
-variable "traefik_version" {
+variable "traefik_chart_version" {
   type    = string
   default = null
 }

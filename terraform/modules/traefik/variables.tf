@@ -1,4 +1,4 @@
-variable "traefik_version" {
+variable "traefik_chart_version" {
   type = string
 }
 

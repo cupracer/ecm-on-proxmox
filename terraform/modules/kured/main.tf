@@ -38,7 +38,7 @@ resource "helm_release" "kured" {
   depends_on = [ ssh_resource.kured_transactional_updates ]
 
   name             = "kured"
-  chart            = "https://github.com/kubereboot/charts/releases/download/kured-${var.kured_version}/kured-${var.kured_version}.tgz"
+  chart            = "https://github.com/kubereboot/charts/releases/download/kured-${var.kured_chart_version}/kured-${var.kured_chart_version}.tgz"
   namespace        = "kube-system"
   create_namespace = true
   wait             = true

@@ -1,6 +1,6 @@
 resource "helm_release" "traefik" {
   name             = "traefik"
-  chart            = "https://traefik.github.io/charts/traefik/traefik-${var.traefik_version}.tgz"
+  chart            = "https://traefik.github.io/charts/traefik/traefik-${var.traefik_chart_version}.tgz"
   namespace        = "traefik"
   create_namespace = true
 

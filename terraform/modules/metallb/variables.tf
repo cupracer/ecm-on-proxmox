@@ -1,4 +1,4 @@
-variable "metallb_version" {
+variable "metallb_chart_version" {
   type = string
 }
 

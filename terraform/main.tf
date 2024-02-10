@@ -30,37 +30,37 @@ provider "helm" {
 
 module "kured" {
   depends_on = [ module.k3s ]
-  count      = var.kured_version != null ? 1 : 0
+  count      = var.kured_chart_version != null ? 1 : 0
   source     = "./modules/kured"
 
   ssh_private_key     = local.root_private_key
   control_plane_nodes = local.control_plane_nodes
   worker_nodes        = local.worker_nodes
-  kured_version       = var.kured_version
+  kured_chart_version = var.kured_chart_version
 }
 
 module "metallb" {
   depends_on = [ module.k3s ]
-  count      = var.metallb_version != null ? 1 : 0
+  count      = var.metallb_chart_version != null ? 1 : 0
   source     = "./modules/metallb"
 
-  metallb_version = var.metallb_version
+  metallb_chart_version = var.metallb_chart_version
 }
 
 module "argocd" {
   depends_on = [ module.k3s ]
-  count      = var.argocd_version != null ? 1 : 0
+  count      = var.argocd_chart_version != null ? 1 : 0
   source     = "./modules/argocd"
 
-  argocd_version = var.argocd_version
-  service_type   = "ClusterIP"
+  argocd_chart_version = var.argocd_chart_version
+  service_type         = "ClusterIP"
 }
 
 module "traefik" {
   depends_on = [ module.k3s ]
-  count      = var.traefik_version != null ? 1 : 0
+  count      = var.traefik_chart_version != null ? 1 : 0
   source     = "./modules/traefik"
 
-  traefik_version = var.traefik_version
+  traefik_chart_version = var.traefik_chart_version
 }
 
