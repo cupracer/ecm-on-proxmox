@@ -61,6 +61,7 @@ locals {
   primary_master_hostname = "${local.cluster_node_hostnames[0]}"
   primary_master_fqdn     = "${local.primary_master_hostname}.${local.dnsdomain}"
   primary_master_host     = module.nodes[local.primary_master_hostname].default_ipv4_address
+  cluster_fqdn            = values(local.proxy_nodes)[0].fqdn # TODO: REPLACE WORKAROUND AND CHOOSE A REAL LB ADDRESS
 
   proxy_nodes             = { for i, n in module.nodes : i => n if n.node_type == "proxy" }
   control_plane_nodes     = { for i, n in module.nodes : i => n if n.node_type == "control_plane" }
