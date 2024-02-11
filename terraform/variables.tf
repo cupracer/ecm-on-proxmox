@@ -54,6 +54,16 @@ variable "metallb_chart_version" {
   default = null
 }
 
+variable "metallb_address_range" {
+  type    = string
+  default = null
+}
+
+variable "metallb_l2advertisement_name" {
+  type    = string
+  default = null
+}
+
 variable "argocd_chart_version" {
   type    = string
   default = null

@@ -50,6 +50,9 @@ module "metallb" {
   metallb_chart_version = var.metallb_chart_version
   control_plane         = local.primary_master_host
   ssh_private_key       = local.root_private_key
+
+  address_range        = var.metallb_address_range
+  l2advertisement_name = var.metallb_l2advertisement_name
 }
 
 module "argocd" {
