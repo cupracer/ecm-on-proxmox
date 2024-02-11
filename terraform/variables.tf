@@ -64,3 +64,18 @@ variable "traefik_chart_version" {
   default = null
 }
 
+variable "cert_manager_chart_version" {
+  type    = string
+  default = null
+}
+
+variable "rancher_chart_url" {
+  type    = string
+  default = null
+}
+
+variable "rancher_password" {
+  type    = string
+  default = null
+}
+

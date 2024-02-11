@@ -6,6 +6,10 @@ variable "cluster_name" {
   type = string
 }
 
+variable "cluster_fqdn" {
+  type = string
+}
+
 variable "control_plane_nodes" {
   type = map
 }
@@ -16,6 +20,16 @@ variable "worker_nodes" {
 
 variable "ssh_private_key" {
   type = string
+}
+
+variable "disable_k3s_servicelb" {
+  type    = bool
+  default = false
+}
+
+variable "disable_k3s_traefik" {
+  type    = bool
+  default = false
 }
 
 variable "set_taints" {

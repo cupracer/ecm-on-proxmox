@@ -3,9 +3,14 @@ token: ${cluster_token}
 disable-cloud-controller: true
 disable:
   - "local-storage"
+  %{~ if disable_servicelb == true ~}
   - "servicelb"
+  %{ endif ~}
+  %{~ if disable_traefik == true ~}
   - "traefik"
+  %{ endif ~}
 tls-san:
+  - "${cluster_fqdn}"
   %{~ for fqdn in proxy_fqdns ~}
   - "${fqdn}"
   %{~ endfor ~}
@@ -25,3 +30,4 @@ kubelet-arg:
 node-taint:
   - "node-role.kubernetes.io/control-plane:NoSchedule"
 %{ endif ~}
+

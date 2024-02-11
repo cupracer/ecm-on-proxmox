@@ -1,6 +1,7 @@
 locals {
   cluster_token     = random_string.cluster_token.result
-  random_proxy_node = values(var.proxy_nodes)[0]
+  random_proxy_node = values(var.proxy_nodes)[0]  #TODO: THIS IS FAKE AND NEEDS TO BE FIXED (NO RANDOM NEEDED)
+  cluster_url       = "https://${local.random_proxy_node.fqdn}:6443"
 }
 
 resource "random_string" "cluster_token" {
@@ -24,8 +25,6 @@ resource "ssh_resource" "workaround_disable_selinux" {
   ]
 }
 
-
-
 resource "ssh_resource" "setup_control_planes" {
   depends_on = [ ssh_resource.workaround_disable_selinux ]
 
@@ -38,6 +37,7 @@ resource "ssh_resource" "setup_control_planes" {
 
   pre_commands = [
     "mkdir -p /etc/rancher/k3s/config.yaml.d",
+    "mkdir -p /var/lib/rancher/k3s/server/manifests",
   ]
 
   file {
@@ -46,11 +46,14 @@ resource "ssh_resource" "setup_control_planes" {
     group = "root"
     permissions = "0640"
     content = templatefile("${path.module}/control_plane_config.yaml.tftpl", {
-      fqdn = each.value.fqdn
-      cluster_token = local.cluster_token
-      proxy_fqdns = [for node in var.proxy_nodes : node.fqdn]
-      proxy_ipv4s = [for node in var.proxy_nodes : node.default_ipv4_address]
-      set_taints = var.set_taints
+      fqdn              = each.value.fqdn
+      cluster_token     = local.cluster_token
+      cluster_fqdn      = var.cluster_fqdn
+      proxy_fqdns       = [for node in var.proxy_nodes : node.fqdn]
+      proxy_ipv4s       = [for node in var.proxy_nodes : node.default_ipv4_address]
+      disable_servicelb = var.disable_k3s_servicelb
+      disable_traefik   = var.disable_k3s_traefik
+      set_taints        = var.set_taints
     })
   }
 
@@ -64,7 +67,7 @@ resource "ssh_resource" "setup_control_planes" {
 cluster-init: true
 EOT
       ) : <<-EOT
-server: https://${local.random_proxy_node.fqdn}:6443
+server: ${local.cluster_url}
 EOT
   }
 
@@ -106,9 +109,25 @@ resource "local_file" "kube_config_server_yaml" {
   content  = ssh_resource.retrieve_cluster_config.result
 }
 
+resource "null_resource" "wait_for_k3s" {
+  triggers = {
+    url_check = data.http.k3s.request_body == "pong"
+  }
+
+  provisioner "local-exec" {
+    command = "echo 'URL is successful.'"
+  }
+}
+
+data "http" "k3s" {
+  depends_on = [ local_file.kube_config_server_yaml, ]
+
+  url = "${local.cluster_url}/ping"
+  insecure = true
+}
 
 resource "ssh_resource" "setup_workers" {
-  depends_on = [ ssh_resource.setup_control_planes ]
+  depends_on = [ null_resource.wait_for_k3s, ]
 
   for_each = var.worker_nodes
 
@@ -129,7 +148,7 @@ resource "ssh_resource" "setup_workers" {
     group = "root"
     permissions = "0640"
     content = <<-EOT
-# Only works in K3S_URL variable => server: https://${var.primary_master_fqdn}:6443
+# Only works in K3S_URL variable => server: ${local.cluster_url}
 # Only works in K3S_TOKEN variable => token: ${local.cluster_token}
 selinux: true
 kubelet-arg:
@@ -140,7 +159,7 @@ EOT
   commands = [<<-EOT
     curl -sfL https://get.k3s.io | \
       INSTALL_K3S_VERSION="${var.k3s_version}" \
-      K3S_URL="https://${var.primary_master_fqdn}:6443" \
+      K3S_URL="${local.cluster_url}" \
       K3S_TOKEN="${local.cluster_token}" \
       INSTALL_K3S_SKIP_START=true \
       INSTALL_K3S_SKIP_SELINUX_RPM=true \
