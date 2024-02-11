@@ -39,7 +39,7 @@ resource "ssh_resource" "setup_podman_nginx" {
 
       [Service]
       Type=exec
-      ExecStart=/usr/bin/podman run --rm -a stdout --name podman-nginx -p 443:443 -p 6443:6443 -v /etc/nginx.conf:/etc/nginx/nginx.conf:ro registry.suse.com/suse/nginx
+      ExecStart=/usr/bin/podman run --rm -a stdout --name podman-nginx -p 80:80 -p 443:443 -p 6443:6443 -v /etc/nginx.conf:/etc/nginx/nginx.conf:ro registry.suse.com/suse/nginx
       ExecStop=/usr/bin/sh -c 'while kill $MAINPID 2>/dev/null; do sleep 1; done'
       TimeoutStopSec=20
 
