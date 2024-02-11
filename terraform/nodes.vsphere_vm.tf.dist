@@ -4,6 +4,10 @@ terraform {
       source = "hashicorp/vsphere"
       version = ">= 2.6.1"
     }
+    rancher2 = {
+      source = "rancher/rancher2"
+      version = ">= 4.0.0"
+    }
   }
 }
 
