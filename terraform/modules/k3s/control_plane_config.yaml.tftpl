@@ -5,10 +5,10 @@ disable:
   - "local-storage"
   %{~ if disable_servicelb == true ~}
   - "servicelb"
-  %{ endif ~}
+  %{~ endif ~}
   %{~ if disable_traefik == true ~}
   - "traefik"
-  %{ endif ~}
+  %{~ endif ~}
 tls-san:
   - "${cluster_fqdn}"
   %{~ for fqdn in proxy_fqdns ~}
