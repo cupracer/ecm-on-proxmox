@@ -124,6 +124,16 @@ data "http" "k3s" {
 
   url = "${local.cluster_url}/ping"
   insecure = true
+
+# TODO: FIX ME
+# │ Error: Error making request
+# │
+# │   with module.k3s.data.http.k3s,
+# │   on modules/k3s/main.tf line 122, in data "http" "k3s":
+# │  122: data "http" "k3s" {
+# │
+# │ Error making request: GET https://c1d1proxy1.<redacted>:6443/ping giving up after 1 attempt(s): Get
+# │ "https://c1d1proxy1.<redacted>:6443/ping": EOF
 }
 
 resource "ssh_resource" "setup_workers" {
