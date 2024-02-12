@@ -41,7 +41,8 @@ variable "node_root_plain_password" {
 }
 
 variable "k3s_version" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "kured_chart_version" {

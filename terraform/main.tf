@@ -9,6 +9,7 @@ module "proxies" {
 
 module "k3s" {
   depends_on = [ module.proxies ]
+  count      = var.k3s_version != null ? 1: 0
   source     = "./modules/k3s"
 
   ssh_private_key       = local.root_private_key
@@ -27,7 +28,7 @@ module "k3s" {
 
 provider "helm" {
   kubernetes {
-    config_path = module.k3s.kube_config_server_yaml.filename
+    config_path = length(module.k3s) > 0 ? module.k3s[0].kube_config_server_yaml.filename : null
   }
 }
 
