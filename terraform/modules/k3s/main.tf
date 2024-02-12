@@ -111,11 +111,11 @@ resource "local_file" "kube_config_server_yaml" {
 
 resource "null_resource" "wait_for_k3s" {
   triggers = {
-    url_check = data.http.k3s.request_body == "pong"
+    url_check = (data.http.k3s.request_body == "pong")
   }
 
   provisioner "local-exec" {
-    command = "echo 'URL is successful.'"
+    command = "echo 'Cluster URL ${local.cluster_url}/ping is reachable.'"
   }
 }
 
@@ -125,15 +125,11 @@ data "http" "k3s" {
   url = "${local.cluster_url}/ping"
   insecure = true
 
-# TODO: FIX ME
-# │ Error: Error making request
-# │
-# │   with module.k3s.data.http.k3s,
-# │   on modules/k3s/main.tf line 122, in data "http" "k3s":
-# │  122: data "http" "k3s" {
-# │
-# │ Error making request: GET https://c1d1proxy1.<redacted>:6443/ping giving up after 1 attempt(s): Get
-# │ "https://c1d1proxy1.<redacted>:6443/ping": EOF
+  retry {
+    attempts = 10
+    min_delay_ms = 1000
+    max_delay_ms = 3000
+  }
 }
 
 resource "ssh_resource" "setup_workers" {
