@@ -1,5 +1,5 @@
 # COMMON settings
-cluster_prefix               = "c1"
+cluster_prefix               = "c1d1"
 hostname_base                = "node"
 dnsdomain                    = "example.com"
 num_proxies                  = 1
