@@ -1,7 +1,6 @@
 # COMMON settings
 cluster_name                 = "c1d1"
 dnsdomain                    = "example.com"
-num_proxies                  = 1
 num_cluster_nodes            = 5
 num_control_planes           = 3
 root_authorized_keys_file    = null

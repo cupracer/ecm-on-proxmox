@@ -6,10 +6,6 @@ variable "dnsdomain" {
   type = string
 }
 
-variable "num_proxies" {
-  type = number
-}
-
 variable "num_cluster_nodes" {
   type = number
 }
