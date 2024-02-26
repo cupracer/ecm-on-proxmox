@@ -156,6 +156,7 @@ resource "ssh_resource" "setup_workers" {
     content = <<-EOT
 # Only works in K3S_URL variable => server: ${local.cluster_url}
 # Only works in K3S_TOKEN variable => token: ${local.cluster_token}
+node-name: ${each.value.fqdn}
 selinux: true
 kubelet-arg:
   - "node-status-update-frequency=5s"
