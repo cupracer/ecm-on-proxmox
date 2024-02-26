@@ -1,10 +1,5 @@
-variable "cluster_prefix" {
+variable "cluster_name" {
   type = string
-}
-
-variable "hostname_base" {
-  type = string
-  default = "cluster"
 }
 
 variable "dnsdomain" {

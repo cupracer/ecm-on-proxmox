@@ -1,6 +1,5 @@
 locals {
-  cluster_prefix          = var.cluster_prefix
-  hostname_base           = var.hostname_base
+  cluster_name            = var.cluster_name
   dnsdomain               = var.dnsdomain
 
   num_proxies             = var.num_proxies
@@ -12,9 +11,8 @@ locals {
 
   #### AUTOMATED VALUES BELOW ####
 
-  proxy_node_hostnames    = [for i in range(local.num_proxies) : "${local.cluster_prefix}proxy${i + 1}"]
-  cluster_name            = "${local.cluster_prefix}${local.hostname_base}"
-  cluster_node_hostnames  = [for i in range(local.num_cluster_nodes) : "${local.cluster_name}${i + 1}"]
+  proxy_node_hostnames    = [for i in range(local.num_proxies) : "${local.cluster_name}${i + 1}"]
+  cluster_node_hostnames  = [for i in range(local.num_cluster_nodes) : "${local.cluster_name}node${i + 1}"]
   num_workers             = local.num_cluster_nodes - local.num_control_planes
 
   filtered_proxy_hostnames = slice(local.proxy_node_hostnames, 0, local.num_proxies)
