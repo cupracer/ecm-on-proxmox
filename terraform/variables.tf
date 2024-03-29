@@ -66,6 +66,11 @@ variable "traefik_chart_version" {
   default = null
 }
 
+variable "system_upgrade_controller_version" {
+  type    = string
+  default = null
+}
+
 variable "cert_manager_chart_version" {
   type    = string
   default = null

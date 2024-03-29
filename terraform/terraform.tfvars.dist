@@ -1,22 +1,23 @@
 # COMMON settings
-cluster_name                 = "c1d1"
-dnsdomain                    = "example.com"
-num_cluster_nodes            = 5
-num_control_planes           = 3
-root_authorized_keys_file    = null
-root_ssh_private_key_file    = null
-node_root_lock_password      = true
-node_root_plain_password     = "changeme"
-# k3s_version                  = "v1.27.10+k3s2"
-# kured_chart_version          = ""
-# metallb_chart_version        = ""
-# metallb_address_range        = ""
-# metallb_l2advertisement_name = ""
-# argocd_chart_version         = ""
-# traefik_chart_version        = ""
-# cert_manager_chart_version   = "1.14.2"
-# rancher_chart_url            = "https://releases.rancher.com/server-charts/stable/rancher-2.8.2.tgz"
-# rancher_password             = "" # min 12 chars
+cluster_name                      = "c1d1"
+dnsdomain                         = "example.com"
+num_cluster_nodes                 = 5
+num_control_planes                = 3
+root_authorized_keys_file         = null
+root_ssh_private_key_file         = null
+node_root_lock_password           = true
+node_root_plain_password          = "changeme"
+# k3s_version                       = "v1.27.10+k3s2"
+# kured_chart_version               = ""
+# metallb_chart_version             = ""
+# metallb_address_range             = ""
+# metallb_l2advertisement_name      = ""
+# argocd_chart_version              = ""
+# traefik_chart_version             = ""
+# system_upgrade_controller_version = ""
+# cert_manager_chart_version        = "1.14.2"
+# rancher_chart_url                 = "https://releases.rancher.com/server-charts/stable/rancher-2.8.2.tgz"
+# rancher_password                  = "" # min 12 chars
 
 # PROXMOX settings
 # proxmox_api_url          = "https://changeme.example.com:8006/api2/json"

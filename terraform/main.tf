@@ -73,6 +73,17 @@ module "traefik" {
   traefik_chart_version = var.traefik_chart_version
 }
 
+module "system_upgrade_controller" {
+  depends_on = [ module.k3s ]
+  count      = var.system_upgrade_controller_version != null ? 1 : 0
+  source     = "./modules/system_upgrade_controller"
+
+  control_plane         = local.primary_master_host
+  ssh_private_key       = local.root_private_key
+
+  system_upgrade_controller_version = var.system_upgrade_controller_version
+}
+
 ########
 
 provider "rancher2" {
