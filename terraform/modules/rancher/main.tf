@@ -34,7 +34,7 @@ resource "helm_release" "rancher_server" {
 
   set {
     name  = "hostname"
-    value = var.cluster_fqdn
+    value = lower(var.cluster_fqdn)
   }
 
   set {
