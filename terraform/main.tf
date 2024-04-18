@@ -7,6 +7,17 @@ module "proxies" {
   control_planes_fqdn = [for entry in local.control_planes_map : entry.fqdn]
 }
 
+module "rancher_registration" {
+  depends_on = [ module.proxies ]
+  count      = var.registration_command != null ? 1: 0
+  source     = "./modules/rancher_registration"
+
+  ssh_private_key       = local.root_private_key
+  control_plane_nodes   = local.control_plane_nodes
+  worker_nodes          = local.worker_nodes
+  registration_command  = var.registration_command
+}
+
 module "k3s" {
   depends_on = [ module.proxies ]
   count      = var.k3s_version != null ? 1: 0

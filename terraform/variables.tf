@@ -86,3 +86,8 @@ variable "rancher_password" {
   default = null
 }
 
+variable "registration_command" {
+  type    = string
+  default = null
+}
+
