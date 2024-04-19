@@ -20,7 +20,7 @@ module "rancher_registration" {
 
 module "k3s" {
   depends_on = [ module.proxies ]
-  count      = var.k3s_version != null ? 1: 0
+  count      = var.k3s_version != null && var.registration_command == null ? 1 : 0
   source     = "./modules/k3s"
 
   ssh_private_key       = local.root_private_key
