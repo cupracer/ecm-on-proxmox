@@ -25,8 +25,25 @@ resource "ssh_resource" "workaround_disable_selinux" {
   ]
 }
 
+resource "ssh_resource" "additional_packages" {
+  depends_on   = [ ssh_resource.workaround_disable_selinux ]
+
+  for_each     = merge(var.control_plane_nodes, var.worker_nodes)
+
+  host         = each.value.default_ipv4_address
+  port         = 22
+  user         = "root"
+  private_key  = var.ssh_private_key
+
+  commands = [
+    "transactional-update --no-selfupdate shell <<< '
+      zypper --gpg-auto-import-keys install -y cri-tools kubernetes-client llvm clang'", 
+    "systemctl stop sshd.service && reboot",
+  ]
+}
+
 resource "ssh_resource" "setup_control_planes" {
-  depends_on = [ ssh_resource.workaround_disable_selinux ]
+  depends_on = [ ssh_resource.additional_packages ]
 
   for_each = var.control_plane_nodes
 
@@ -73,9 +90,6 @@ EOT
 
   commands = [<<-EOT
     curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="${var.k3s_version}" INSTALL_K3S_SKIP_START=true INSTALL_K3S_SKIP_SELINUX_RPM=true INSTALL_K3S_SELINUX_WARN=true sh -s - server > /var/log/curl_install_k3s.log 2>&1
-
-    transactional-update --no-selfupdate --continue shell <<< "
-      zypper --gpg-auto-import-keys install -y cri-tools kubernetes-client llvm clang"
 
     mkdir -p /root/.kube
     ln -sf /etc/rancher/k3s/k3s.yaml /root/.kube/config
