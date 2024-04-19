@@ -15,7 +15,10 @@ module "rancher_registration" {
   ssh_private_key       = local.root_private_key
   control_plane_nodes   = local.control_plane_nodes
   worker_nodes          = local.worker_nodes
+  proxy_nodes           = local.proxy_nodes
+  primary_master_host   = local.primary_master_host
   registration_command  = var.registration_command
+  cluster_name          = local.cluster_name
 }
 
 module "k3s" {
@@ -39,12 +42,12 @@ module "k3s" {
 
 provider "helm" {
   kubernetes {
-    config_path = length(module.k3s) > 0 ? module.k3s[0].kube_config_server_yaml.filename : null
+    config_path = length(module.rancher_registration) > 0 ? module.rancher_registration[0].kube_config_server_yaml.filename : ( length(module.k3s) > 0 ? module.k3s[0].kube_config_server_yaml.filename : null )
   }
 }
 
 module "kured" {
-  depends_on = [ module.k3s ]
+  depends_on = [ module.k3s, module.rancher_registration, ]
   count      = var.kured_chart_version != null ? 1 : 0
   source     = "./modules/kured"
 
@@ -55,7 +58,7 @@ module "kured" {
 }
 
 module "metallb" {
-  depends_on = [ module.k3s ]
+  depends_on = [ module.k3s, module.rancher_registration, ]
   count      = var.metallb_chart_version != null ? 1 : 0
   source     = "./modules/metallb"
 
@@ -68,7 +71,7 @@ module "metallb" {
 }
 
 module "argocd" {
-  depends_on = [ module.k3s ]
+  depends_on = [ module.k3s, module.rancher_registration, ]
   count      = var.argocd_chart_version != null ? 1 : 0
   source     = "./modules/argocd"
 
@@ -77,7 +80,7 @@ module "argocd" {
 }
 
 module "traefik" {
-  depends_on = [ module.k3s ]
+  depends_on = [ module.k3s, module.rancher_registration, ]
   count      = var.traefik_chart_version != null ? 1 : 0
   source     = "./modules/traefik"
 
@@ -85,7 +88,7 @@ module "traefik" {
 }
 
 module "system_upgrade_controller" {
-  depends_on = [ module.k3s ]
+  depends_on = [ module.k3s, module.rancher_registration, ]
   count      = var.system_upgrade_controller_version != null ? 1 : 0
   source     = "./modules/system_upgrade_controller"
 

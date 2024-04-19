@@ -6,11 +6,24 @@ variable "worker_nodes" {
   type = map
 }
 
+variable "proxy_nodes" {
+  type = map
+}
+
 variable "ssh_private_key" {
   type = string
 }
 
 variable "registration_command" {
+  type = string
+}
+
+# TODO: RENAME, BECAUSE IT'S AN IP?
+variable "primary_master_host" {
+  type = string
+}
+
+variable "cluster_name" {
   type = string
 }
 
