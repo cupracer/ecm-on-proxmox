@@ -43,7 +43,7 @@ locals {
         "fqdn"         = "${hostname}.${local.dnsdomain}",
         "node_type"    = "worker",
         "cpu_cores"    = 2,
-        "memory_m"     = 4096,
+        "memory_m"     = 8192,
         "disk_size_gb" = 30,
       }
   }
