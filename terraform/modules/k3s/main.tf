@@ -35,10 +35,11 @@ resource "ssh_resource" "additional_packages" {
   user         = "root"
   private_key  = var.ssh_private_key
 
-  commands = [
-    "transactional-update --no-selfupdate shell <<< '
-      zypper --gpg-auto-import-keys install -y cri-tools kubernetes-client llvm clang'", 
-    "systemctl stop sshd.service && reboot",
+  commands = [<<-EOT
+    transactional-update --no-selfupdate shell <<< "
+      zypper --gpg-auto-import-keys install -y cri-tools kubernetes-client llvm clang"
+    systemctl stop sshd.service && reboot
+	EOT
   ]
 }
 
@@ -186,9 +187,6 @@ EOT
       INSTALL_K3S_SKIP_SELINUX_RPM=true \
       INSTALL_K3S_SELINUX_WARN=true \
       sh - > /var/log/curl_install_k3s.log 2>&1
-
-    transactional-update --no-selfupdate --continue shell <<< "
-      zypper --gpg-auto-import-keys install -y cri-tools llvm clang"
 
     systemctl stop sshd.service && reboot
     EOT
