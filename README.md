@@ -70,3 +70,9 @@ If there's an issue when creating too many VM's at the same time with Terraform 
 terraform apply -parallelism=1
 ```
 
+### Misc.
+URL for image downloads:
+```
+https://download.opensuse.org/tumbleweed/appliances/iso/
+```
+
