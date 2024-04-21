@@ -22,8 +22,60 @@ resource "helm_release" "cert_manager" {
   }
 }
 
-resource "helm_release" "rancher_server" {
+resource "ssh_resource" "install_ca_data" {
   depends_on = [ helm_release.cert_manager, ]
+
+  count = var.ca_key_path != null && var.ca_cert_path != null ? 1 : 0
+
+  host         = var.control_plane
+  port         = 22
+  user         = "root"
+  private_key  = var.ssh_private_key
+
+  pre_commands = [
+    "mkdir -p /var/lib/rancher/k3s/server/manifests",
+  ]
+
+  file {
+    destination = "/var/lib/rancher/k3s/server/manifests/cert-manager-ca-data.yaml"
+    owner = "root"
+    group = "root"
+    permissions = "0640"
+    content = templatefile("${path.module}/cert-manager-ca-data.yaml.tftpl", {
+      cert_data = filebase64(var.ca_cert_path),
+      key_data = filebase64(var.ca_key_path),
+    })
+  }
+}
+
+resource "ssh_resource" "install_rancher_tls" {
+  depends_on = [ ssh_resource.install_ca_data, ]
+
+  count = var.ca_key_path != null && var.ca_cert_path != null ? 1 : 0
+
+  host         = var.control_plane
+  port         = 22
+  user         = "root"
+  private_key  = var.ssh_private_key
+
+  pre_commands = [
+    "mkdir -p /var/lib/rancher/k3s/server/manifests",
+  ]
+
+  file {
+    destination = "/var/lib/rancher/k3s/server/manifests/rancher-tls-data.yaml"
+    owner = "root"
+    group = "root"
+    permissions = "0640"
+    content = templatefile("${path.module}/rancher-tls-data.yaml.tftpl", {
+      cacert_data = filebase64(var.ca_cert_path),
+      fqdn = lower(var.cluster_fqdn),
+    })
+  }
+}
+
+resource "helm_release" "rancher_server" {
+  depends_on = [ ssh_resource.install_rancher_tls, ]
 
   name             = "rancher"
   chart            = var.rancher_chart_url
@@ -35,6 +87,16 @@ resource "helm_release" "rancher_server" {
   set {
     name  = "hostname"
     value = lower(var.cluster_fqdn)
+  }
+
+  set {
+    name  = "ingress.tls.source"
+    value = var.ca_key_path != null && var.ca_cert_path != null ? "secret" : "rancher"
+  }
+
+  set {
+    name  = "privateCA"
+    value = var.ca_key_path != null && var.ca_cert_path != null ? true : false
   }
 
   set {

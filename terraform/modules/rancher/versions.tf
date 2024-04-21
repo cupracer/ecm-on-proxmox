@@ -8,6 +8,10 @@ terraform {
       source = "rancher/rancher2"
       version = ">= 4.0.0"
     }
+    ssh = {
+      source = "loafoe/ssh"
+      version = ">= 2.7.0"
+    }
   }
 }
 

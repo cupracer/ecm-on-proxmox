@@ -122,6 +122,11 @@ module "rancher" {
   rancher_password           = var.rancher_password
   cluster_fqdn               = local.cluster_fqdn
   control_plane_nodes        = local.control_plane_nodes
+
+  ssh_private_key            = local.root_private_key
+  control_plane              = local.primary_master_host
+  ca_key_path                = var.ca_key_path
+  ca_cert_path               = var.ca_cert_path
 }
 
 #provider "rancher2" {

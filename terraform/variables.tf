@@ -91,3 +91,13 @@ variable "registration_command" {
   default = null
 }
 
+variable "ca_key_path" {
+  type    = string
+  default = null
+}
+
+variable "ca_cert_path" {
+  type    = string
+  default = null
+}
+
