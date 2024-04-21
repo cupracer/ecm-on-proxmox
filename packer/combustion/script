@@ -17,6 +17,10 @@ systemctl enable sshd.service
 # Set timezone
 ln -fs /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
+# Add private CA certificates
+cp ./ca_certificates/* /etc/pki/trust/anchors/.
+update-ca-certificates
+
 # Install additional software
 zypper --non-interactive install --recommends \
     qemu-guest-agent open-vm-tools cloud-init \
