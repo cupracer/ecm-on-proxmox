@@ -49,3 +49,8 @@ variable "k3s_version" {
   type = string
 }
 
+variable "use_selinux" {
+  type    = bool
+  default = true
+}
+

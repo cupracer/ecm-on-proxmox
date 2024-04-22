@@ -36,6 +36,11 @@ variable "k3s_version" {
   default = null
 }
 
+variable "k3s_use_selinux" {
+  type    = bool
+  default = true
+}
+
 variable "kured_chart_version" {
   type    = string
   default = null

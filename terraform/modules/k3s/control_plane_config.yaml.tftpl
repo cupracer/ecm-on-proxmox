@@ -17,7 +17,7 @@ tls-san:
   %{~ for ip in proxy_ipv4s ~}
   - "${ip}"
   %{~ endfor ~}
-selinux: true
+selinux: ${selinux}
 kube-apiserver-arg: 
   - "default-not-ready-toleration-seconds=10"
   - "default-unreachable-toleration-seconds=10"

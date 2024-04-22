@@ -36,6 +36,7 @@ module "k3s" {
   primary_master_fqdn   = local.primary_master_fqdn
   primary_master_host   = local.primary_master_host
   k3s_version           = var.k3s_version
+  use_selinux           = var.k3s_use_selinux
   disable_k3s_servicelb = (var.metallb_chart_version != null)
   disable_k3s_traefik   = (var.traefik_chart_version != null)
 }

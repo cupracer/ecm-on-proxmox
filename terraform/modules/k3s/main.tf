@@ -2,6 +2,8 @@ locals {
   cluster_token     = random_string.cluster_token.result
   random_proxy_node = values(var.proxy_nodes)[0]  #TODO: THIS IS FAKE AND NEEDS TO BE FIXED (NO RANDOM NEEDED)
   cluster_url       = "https://${local.random_proxy_node.fqdn}:6443"
+  selinux_int       = var.use_selinux ? 1 : 0
+  selinux_booltext  = var.use_selinux ? "true" : "false"
 }
 
 resource "random_string" "cluster_token" {
@@ -19,7 +21,7 @@ resource "ssh_resource" "workaround_disable_selinux" {
   private_key  = var.ssh_private_key
 
   commands = [
-    "sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/s/ selinux=./ selinux=0/' /etc/default/grub",
+    "sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/s/ selinux=./ selinux=${local.selinux_int}/' /etc/default/grub",
     "transactional-update --no-selfupdate grub.cfg",
     "systemctl stop sshd.service && reboot",
   ]
@@ -72,6 +74,7 @@ resource "ssh_resource" "setup_control_planes" {
       disable_servicelb = var.disable_k3s_servicelb
       disable_traefik   = var.disable_k3s_traefik
       set_taints        = var.set_taints
+      selinux           = local.selinux_booltext
     })
   }
 
@@ -172,7 +175,7 @@ resource "ssh_resource" "setup_workers" {
 # Only works in K3S_URL variable => server: ${local.cluster_url}
 # Only works in K3S_TOKEN variable => token: ${local.cluster_token}
 node-name: ${each.value.fqdn}
-selinux: true
+selinux: ${local.selinux_booltext}
 kubelet-arg:
   - "node-status-update-frequency=5s"
 EOT
