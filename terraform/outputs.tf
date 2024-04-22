@@ -15,10 +15,10 @@ output "worker_nodes" {
 }
 
 output "rancher_downstream_node_command" {
-  value = nonsensitive(module.rancher_downstream[0].node_command)
+  value = length(module.rancher_downstream) > 0 ? nonsensitive(module.rancher_downstream[0].node_command) : null
 }
 
 output "rancher_downstream_node_command_insecure" {
-  value = nonsensitive(module.rancher_downstream[0].node_command_insecure)
+  value = length(module.rancher_downstream) > 0 ? nonsensitive(module.rancher_downstream[0].node_command_insecure) : null
 }
 
