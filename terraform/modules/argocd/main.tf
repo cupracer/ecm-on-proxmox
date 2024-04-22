@@ -1,3 +1,7 @@
+locals {
+  server_insecure = var.service_type != "LoadBalancer" ? true : false
+}
+
 resource "helm_release" "argocd" {
   name             = "argocd"
   chart            = "https://github.com/argoproj/argo-helm/releases/download/argo-cd-${var.argocd_chart_version}/argo-cd-${var.argocd_chart_version}.tgz"
@@ -12,7 +16,7 @@ resource "helm_release" "argocd" {
     <<EOT
 configs:
   params:
-   server.insecure: var.service_type != "LoadBalancer" ? true : false
+    server.insecure: ${local.server_insecure}
 
 server:
   service:
