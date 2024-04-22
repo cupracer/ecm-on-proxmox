@@ -134,7 +134,7 @@ provider "rancher2" {
 
   api_url  = "https://${local.cluster_fqdn}"
   insecure = false
-  token_key = module.rancher[0].rancher_token
+  token_key = length(module.rancher) > 0 ? module.rancher[0].rancher_token : ""
   timeout   = "300s"
 }
 
