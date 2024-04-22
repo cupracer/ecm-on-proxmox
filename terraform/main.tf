@@ -129,13 +129,22 @@ module "rancher" {
   ca_cert_path               = var.ca_cert_path
 }
 
-#provider "rancher2" {
-#  alias = "admin"
-#
-#  api_url  = "https://${local.cluster_fqdn}"
-#  insecure = true
-#  # ca_certs  = data.kubernetes_secret.rancher_cert.data["ca.crt"]
-#  token_key = module.rancher.rancher_token
-#  timeout   = "300s"
-#}
+provider "rancher2" {
+  alias = "admin"
 
+  api_url  = "https://${local.cluster_fqdn}"
+  insecure = false
+  # ca_certs  = data.kubernetes_secret.rancher_cert.data["ca.crt"]
+  token_key = module.rancher[0].rancher_token
+  timeout   = "300s"
+}
+
+resource "rancher2_cluster_v2" "create_downstream_cluster" {
+  depends_on = [ module.rancher, ]
+
+  count    = var.rancher_prepare_downstream ? 1 : 0
+  provider = rancher2.admin
+
+  name = var.downstream_cluster_name
+  kubernetes_version = var.k3s_version
+}

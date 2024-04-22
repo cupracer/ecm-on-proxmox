@@ -86,6 +86,16 @@ variable "rancher_password" {
   default = null
 }
 
+variable "rancher_prepare_downstream" {
+  type    = bool
+  default = false
+}
+
+variable "downstream_cluster_name" {
+  type    = string
+  default = null
+}
+
 variable "registration_command" {
   type    = string
   default = null
