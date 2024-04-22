@@ -1,3 +1,5 @@
+combustion/ca_certificates/*
+!combustion/ca_certificates/.dir
 ssh_files/*
 openSUSE_MicroOS-selfinstall.pkr.hcl
 variables.pkrvars.hcl
