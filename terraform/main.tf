@@ -76,7 +76,7 @@ module "argocd" {
   source     = "./modules/argocd"
 
   argocd_chart_version = var.argocd_chart_version
-  service_type         = "LoadBalancer" # TOOD: MAKE CONFIGURABLE
+  service_type         = "ClusterIP" # TOOD: MAKE CONFIGURABLE IN terraform.tfvars
 }
 
 module "traefik" {
@@ -134,17 +134,20 @@ provider "rancher2" {
 
   api_url  = "https://${local.cluster_fqdn}"
   insecure = false
-  # ca_certs  = data.kubernetes_secret.rancher_cert.data["ca.crt"]
   token_key = module.rancher[0].rancher_token
   timeout   = "300s"
 }
 
-resource "rancher2_cluster_v2" "create_downstream_cluster" {
+module "rancher_downstream" {
   depends_on = [ module.rancher, ]
+  count      = var.rancher_prepare_downstream ? 1 : 0
+  source     = "./modules/rancher_downstream"
 
-  count    = var.rancher_prepare_downstream ? 1 : 0
-  provider = rancher2.admin
+  providers = {
+    rancher2 = rancher2.admin
+  }
 
-  name = var.downstream_cluster_name
-  kubernetes_version = var.k3s_version
+  downstream_cluster_name    = var.downstream_cluster_name
+  k3s_version                = var.k3s_version
 }
+
