@@ -10,6 +10,10 @@ resource "helm_release" "argocd" {
 
   values = [
     <<EOT
+configs:
+  params:
+   server.insecure: var.service_type != "LoadBalancer" ? true : false
+
 server:
   service:
     type: ${var.service_type}
