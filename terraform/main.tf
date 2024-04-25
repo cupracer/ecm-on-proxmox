@@ -7,6 +7,27 @@ module "proxies" {
   control_planes_fqdn = [for entry in local.control_planes_map : entry.fqdn]
 }
 
+module "dnsmasq" {
+  depends_on = [ module.proxies, ]
+  count      = var.setup_dnsmasq ? 1 : 0
+  source     = "./modules/dnsmasq"
+
+  ssh_private_key     = local.root_private_key
+  proxy_nodes         = local.proxy_nodes
+}
+
+module "dnsmasq_hosts" {
+  depends_on = [ module.dnsmasq, ]
+  count      = var.setup_dnsmasq || length(var.dnsmasq_hosts) > 0 ? 1 : 0
+  source     = "./modules/dnsmasq_hosts"
+
+  ssh_private_key     = local.root_private_key
+  proxy_nodes         = local.proxy_nodes
+  cluster_nodes       = merge(local.control_plane_nodes, local.worker_nodes)
+  cluster_name        = var.cluster_name
+  dnsmasq_hosts       = var.dnsmasq_hosts
+}
+
 module "rancher_registration" {
   depends_on = [ module.proxies ]
   count      = var.registration_command != null ? 1: 0

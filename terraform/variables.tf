@@ -116,3 +116,13 @@ variable "ca_cert_path" {
   default = null
 }
 
+variable "setup_dnsmasq" {
+  type    = bool
+  default = false
+}
+
+variable "dnsmasq_hosts" {
+  type    = list(string)
+  default = []
+}
+
