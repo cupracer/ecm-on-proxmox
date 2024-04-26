@@ -9,8 +9,8 @@ locals {
       node.default_ipv4_address => node.fqdn
   }
 
-  proxy_ips = [
-    for node in var.proxy_nodes :
+  dns_ips = [
+    for node in length(local.dnsmasq_servers) > 0 ? local.dnsmasq_servers : var.proxy_nodes :
       node.default_ipv4_address   
   ]
 }
@@ -66,7 +66,7 @@ resource "ssh_resource" "nm_settings" {
     nmcli con mod "$NMDEVICE" ipv4.ignore-auto-dns yes
     nmcli con mod "$NMDEVICE" ipv6.ignore-auto-dns yes
 
-    for ip in ${join(" ", local.proxy_ips)}; do
+    for ip in ${join(" ", local.dns_ips)}; do
       nmcli con mod "$NMDEVICE" ipv4.dns "$ip"
     done
 
