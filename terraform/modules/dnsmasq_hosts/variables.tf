@@ -14,8 +14,12 @@ variable "ssh_private_key" {
   type = string
 }
 
-variable "dnsmasq_hosts" {
+variable "dnsmasq_servers" {
   type    = list(string)
   default = []
+}
+
+variable "dnsdomain" {
+  type    = string
 }
 

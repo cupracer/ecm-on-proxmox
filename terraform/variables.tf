@@ -121,7 +121,12 @@ variable "setup_dnsmasq" {
   default = false
 }
 
-variable "dnsmasq_hosts" {
+variable "dnsmasq_parent_dns" {
+  type    = list(string)
+  default = []
+}
+
+variable "dnsmasq_servers" {
   type    = list(string)
   default = []
 }

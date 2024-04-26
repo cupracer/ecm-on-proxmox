@@ -14,18 +14,20 @@ module "dnsmasq" {
 
   ssh_private_key     = local.root_private_key
   proxy_nodes         = local.proxy_nodes
+  parent_dns          = var.dnsmasq_parent_dns
 }
 
 module "dnsmasq_hosts" {
   depends_on = [ module.dnsmasq, ]
-  count      = var.setup_dnsmasq || length(var.dnsmasq_hosts) > 0 ? 1 : 0
+  count      = var.setup_dnsmasq || length(var.dnsmasq_servers) > 0 ? 1 : 0
   source     = "./modules/dnsmasq_hosts"
 
   ssh_private_key     = local.root_private_key
   proxy_nodes         = local.proxy_nodes
   cluster_nodes       = merge(local.control_plane_nodes, local.worker_nodes)
   cluster_name        = var.cluster_name
-  dnsmasq_hosts       = var.dnsmasq_hosts
+  dnsmasq_servers     = var.dnsmasq_servers
+  dnsdomain           = local.dnsdomain
 }
 
 module "rancher_registration" {

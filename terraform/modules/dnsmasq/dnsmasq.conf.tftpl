@@ -1,0 +1,10 @@
+domain-needed
+bogus-priv
+no-hosts
+no-resolv
+log-queries
+%{ for server in parent_dns ~}
+server=${server}
+%{ endfor ~}
+addn-hosts=/etc/dnsmasq.hosts.d
+

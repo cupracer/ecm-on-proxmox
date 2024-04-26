@@ -34,15 +34,9 @@ resource "ssh_resource" "dnsserver" {
     owner = "root"
     group = "root"
     permissions = "0644"
-    content = <<-EOT
-      domain-needed
-      bogus-priv
-      no-hosts
-      no-resolv
-      log-queries
-      server=10.0.40.254
-      addn-hosts=/etc/dnsmasq.hosts.d
-      EOT
+    content = templatefile("${path.module}/dnsmasq.conf.tftpl", {
+      parent_dns = var.parent_dns
+    })
   }
 
 #  file {

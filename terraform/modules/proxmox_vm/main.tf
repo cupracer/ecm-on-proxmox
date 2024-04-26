@@ -29,17 +29,6 @@ resource "proxmox_cloud_init_disk" "ci" {
     root_lock_password = local.ci_root_lock_password,
     root_plain_password = local.ci_root_plain_password
   })
-
-#  network_config = yamlencode({
-#    version = 1
-#    config  = [{
-#      type    = "physical"
-#      name    = "eth0"
-#      subnets = [{
-#        type = "dhcp"
-#      }]
-#    }]
-#  })
 }
 
 resource "proxmox_vm_qemu" "vm" {
