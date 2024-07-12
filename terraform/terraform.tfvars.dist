@@ -38,6 +38,7 @@ node_root_plain_password          = "changeme"
 # proxmox_iso_storage_pool = ""
 # proxmox_network_bridge   = ""
 # proxmox_template         = ""
+# proxmox_vm_start_onboot  = false
 
 # VSPHERE settings
 # vsphere_user                 = ""

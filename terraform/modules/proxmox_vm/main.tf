@@ -12,6 +12,7 @@ locals {
   root_public_keys             = var.root_public_keys
   ci_root_lock_password        = var.ci_root_lock_password
   ci_root_plain_password       = var.ci_root_plain_password
+  vm_start_onboot              = var.vm_start_onboot
 }
 
 resource "proxmox_cloud_init_disk" "ci" {
@@ -37,6 +38,7 @@ resource "proxmox_vm_qemu" "vm" {
   target_node = local.proxmox_node
   clone       = local.template
   full_clone  = false
+  onboot      = local.vm_start_onboot
 
   bios    = "ovmf"
   sockets = 1

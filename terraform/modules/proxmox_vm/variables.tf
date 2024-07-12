@@ -60,3 +60,7 @@ variable "ci_root_plain_password" {
   sensitive = true
 }
 
+variable "vm_start_onboot" {
+  type    = bool
+}
+

@@ -33,7 +33,8 @@ locals {
   network_bridge         = var.proxmox_network_bridge
   template               = var.proxmox_template
   ci_root_lock_password  = var.node_root_lock_password
-  ci_root_plain_password = var.node_root_plain_password 
+  ci_root_plain_password = var.node_root_plain_password
+  vm_start_onboot        = var.proxmox_vm_start_onboot
 }
 
 
@@ -51,6 +52,7 @@ module "nodes" {
   cpu_cores              = each.value.cpu_cores
   memory                 = each.value.memory_m
   disk_size              = each.value.disk_size_gb
+  vm_start_onboot        = local.vm_start_onboot
 
   storage_pool           = local.storage_pool
   iso_storage_pool       = local.iso_storage_pool
@@ -96,5 +98,9 @@ variable "proxmox_network_bridge" {
 
 variable "proxmox_template" {
   type = string
+}
+
+variable "proxmox_vm_start_onboot" {
+  type = bool
 }
 
