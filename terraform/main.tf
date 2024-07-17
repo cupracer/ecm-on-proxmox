@@ -150,6 +150,7 @@ module "rancher" {
   cert_manager_chart_version = var.cert_manager_chart_version
   rancher_password           = var.rancher_password
   cluster_fqdn               = local.cluster_fqdn
+  proxy_nodes                = local.proxy_nodes
   control_plane_nodes        = local.control_plane_nodes
 
   ssh_private_key = local.root_private_key

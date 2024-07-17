@@ -1,5 +1,7 @@
 locals {
   rancher_bootstrap_password = random_string.rancher_bootstrap_password.result
+  random_proxy_node          = values(var.proxy_nodes)[0] #TODO: THIS IS FAKE AND NEEDS TO BE FIXED (NO RANDOM NEEDED)
+  rancher_url                = "https://${local.random_proxy_node.fqdn}"
 }
 
 resource "random_string" "rancher_bootstrap_password" {

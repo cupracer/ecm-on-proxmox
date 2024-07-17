@@ -15,6 +15,10 @@ variable "cluster_fqdn" {
   type = string
 }
 
+variable "proxy_nodes" {
+  type = map
+}
+
 variable "control_plane_nodes" {
   type = map
 }
