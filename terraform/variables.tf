@@ -34,6 +34,11 @@ variable "node_root_plain_password" {
 variable "kubernetes_engine" {
   type    = string
   default = null
+
+  validation {
+    condition     = contains(["k3s", "rke2"], var.kubernetes_engine) || var.kubernetes_engine == null
+    error_message = "The variable 'kubernetes_engine' needs to be 'k3s' or 'rke2'."
+  }
 }
 
 variable "kubernetes_engine_version" {
