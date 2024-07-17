@@ -31,11 +31,11 @@ resource "ssh_resource" "setup_address_range" {
   private_key  = var.ssh_private_key
 
   pre_commands = [
-    "mkdir -p /var/lib/rancher/k3s/server/manifests",
+    "mkdir -p /var/lib/rancher/${var.kubernetes_engine}/server/manifests",
   ]
 
   file {
-    destination = "/var/lib/rancher/k3s/server/manifests/metallb-config.yaml"
+    destination = "/var/lib/rancher/${var.kubernetes_engine}/server/manifests/metallb-config.yaml"
     owner = "root"
     group = "root"
     permissions = "0640"

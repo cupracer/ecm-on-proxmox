@@ -22,14 +22,12 @@ variable "ssh_private_key" {
   type = string
 }
 
-variable "disable_k3s_servicelb" {
+variable "use_servicelb" {
   type    = bool
-  default = false
 }
 
-variable "disable_k3s_traefik" {
+variable "use_traefik" {
   type    = bool
-  default = false
 }
 
 variable "set_taints" {
@@ -45,7 +43,12 @@ variable "primary_master_host" {
   type = string
 }
 
-variable "k3s_version" {
+variable "kubernetes_engine" {
+  type = string
+  default = null
+}
+
+variable "kubernetes_engine_version" {
   type = string
 }
 

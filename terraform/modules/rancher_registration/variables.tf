@@ -27,3 +27,7 @@ variable "cluster_name" {
   type = string
 }
 
+variable "kubernetes_engine" {
+  type    = string
+  default = null
+}

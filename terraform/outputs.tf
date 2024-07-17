@@ -21,4 +21,3 @@ output "rancher_downstream_node_command" {
 output "rancher_downstream_node_command_insecure" {
   value = length(module.rancher_downstream) > 0 ? nonsensitive(module.rancher_downstream[0].node_command_insecure) : null
 }
-

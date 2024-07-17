@@ -35,3 +35,7 @@ variable "ssh_private_key" {
   type = string
 }
 
+variable "kubernetes_engine" {
+  type    = string
+  default = null
+}

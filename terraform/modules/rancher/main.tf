@@ -33,11 +33,11 @@ resource "ssh_resource" "install_ca_data" {
   private_key  = var.ssh_private_key
 
   pre_commands = [
-    "mkdir -p /var/lib/rancher/k3s/server/manifests",
+    "mkdir -p /var/lib/rancher/${var.kubernetes_engine}/server/manifests",
   ]
 
   file {
-    destination = "/var/lib/rancher/k3s/server/manifests/cert-manager-ca-data.yaml"
+    destination = "/var/lib/rancher/${var.kubernetes_engine}/server/manifests/cert-manager-ca-data.yaml"
     owner = "root"
     group = "root"
     permissions = "0640"
@@ -59,11 +59,11 @@ resource "ssh_resource" "install_rancher_tls" {
   private_key  = var.ssh_private_key
 
   pre_commands = [
-    "mkdir -p /var/lib/rancher/k3s/server/manifests",
+    "mkdir -p /var/lib/rancher/${var.kubernetes_engine}/server/manifests",
   ]
 
   file {
-    destination = "/var/lib/rancher/k3s/server/manifests/rancher-tls-data.yaml"
+    destination = "/var/lib/rancher/${var.kubernetes_engine}/server/manifests/rancher-tls-data.yaml"
     owner = "root"
     group = "root"
     permissions = "0640"

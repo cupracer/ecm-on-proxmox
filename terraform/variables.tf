@@ -31,12 +31,17 @@ variable "node_root_plain_password" {
   sensitive = true
 }
 
-variable "k3s_version" {
+variable "kubernetes_engine" {
   type    = string
   default = null
 }
 
-variable "k3s_use_selinux" {
+variable "kubernetes_engine_version" {
+  type    = string
+  default = null
+}
+
+variable "use_selinux" {
   type    = bool
   default = true
 }

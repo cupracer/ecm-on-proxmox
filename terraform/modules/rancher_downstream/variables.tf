@@ -3,8 +3,11 @@ variable "downstream_cluster_name" {
   default = null
 }
 
-variable "k3s_version" {
+variable "kubernetes_engine_version" {
   type    = string
   default = null
 }
 
+variable "cluster_fqdn" {
+  type = string
+}

@@ -1,14 +1,22 @@
 node-name: ${fqdn}
 token: ${cluster_token}
 disable-cloud-controller: true
+
+%{ if kubernetes_engine == "rke2" ~}
+enable-servicelb: ${use_servicelb}
+%{~ endif ~}
+
+%{ if kubernetes_engine == "k3s" ~}
 disable:
   - "local-storage"
-  %{~ if disable_servicelb == true ~}
+  %{~ if use_servicelb == false ~}
   - "servicelb"
   %{~ endif ~}
-  %{~ if disable_traefik == true ~}
+  %{~ if use_traefik == false ~}
   - "traefik"
   %{~ endif ~}
+%{~ endif ~}
+
 tls-san:
   - "${cluster_fqdn}"
   %{~ for fqdn in proxy_fqdns ~}
@@ -30,4 +38,3 @@ kubelet-arg:
 node-taint:
   - "node-role.kubernetes.io/control-plane:NoSchedule"
 %{ endif ~}
-

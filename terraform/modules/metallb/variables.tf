@@ -18,3 +18,7 @@ variable "l2advertisement_name" {
   type = string
 }
 
+variable "kubernetes_engine" {
+  type    = string
+  default = null
+}

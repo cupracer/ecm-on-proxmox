@@ -43,7 +43,7 @@ resource "ssh_resource" "retrieve_cluster_config" {
 
   # TODO: DEFINE A CLUSTER FQDN INSTEAD OF POINTING TO A SINGLE PROXY DIRECTLY
   commands = [
-    "sudo sed \"s/127.0.0.1/${local.random_proxy_node.fqdn}/g\" /etc/rancher/k3s/k3s.yaml"
+    "sudo sed \"s/127.0.0.1/${local.random_proxy_node.fqdn}/g\" /etc/rancher/${var.kubernetes_engine}/${var.kubernetes_engine}.yaml"
   ]
 }
 
@@ -57,9 +57,9 @@ resource "local_file" "kube_config_server_yaml" {
   content  = ssh_resource.retrieve_cluster_config.result
 }
 
-resource "null_resource" "wait_for_k3s" {
+resource "null_resource" "wait_for_kubernetes" {
   triggers = {
-    url_check = (data.http.k3s.request_body == "pong")
+    url_check = (data.http.kubernetes.request_body == "pong")
   }
 
   provisioner "local-exec" {
@@ -67,7 +67,7 @@ resource "null_resource" "wait_for_k3s" {
   }
 }
 
-data "http" "k3s" {
+data "http" "kubernetes" {
   depends_on = [ local_file.kube_config_server_yaml, ]
 
   url = "${local.cluster_url}/ping"
