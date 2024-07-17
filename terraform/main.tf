@@ -62,8 +62,8 @@ module "kubernetes" {
   kubernetes_engine           = var.kubernetes_engine
   kubernetes_engine_version           = var.kubernetes_engine_version
   use_selinux           = var.use_selinux
-  use_servicelb = (var.metallb_chart_version != null)
-  use_traefik   = (var.traefik_chart_version != null)
+  use_servicelb = !(var.metallb_chart_version != null)
+  use_traefik   = !(var.traefik_chart_version != null)
 }
 
 provider "helm" {
