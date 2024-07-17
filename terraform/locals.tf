@@ -8,6 +8,8 @@ locals {
   root_public_keys        = [ for key in split("\n", file(var.root_authorized_keys_file)) : key if key != "" ]
   root_private_key        = file(var.root_ssh_private_key_file)
 
+  downstream_cluster_fqdn = var.downstream_cluster_name != null ? "${var.downstream_cluster_name}.${local.dnsdomain}" : null
+
   #### AUTOMATED VALUES BELOW ####
 
   proxy_node_hostname     = local.cluster_name
@@ -30,8 +32,8 @@ locals {
       hostname => {
         "fqdn"         = "${hostname}.${local.dnsdomain}",
         "node_type"    = "control_plane",
-        "cpu_cores"    = 2,
-        "memory_m"     = 8192,
+        "cpu_cores"    = 4,
+        "memory_m"     = 16384
         "disk_size_gb" = 30,
       }
     }
@@ -42,8 +44,8 @@ locals {
       hostname => {
         "fqdn"         = "${hostname}.${local.dnsdomain}",
         "node_type"    = "worker",
-        "cpu_cores"    = 2,
-        "memory_m"     = 8192,
+        "cpu_cores"    = 4,
+        "memory_m"     = 16384,
         "disk_size_gb" = 30,
       }
   }
