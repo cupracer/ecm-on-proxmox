@@ -15,8 +15,11 @@ resource "helm_release" "cert_manager" {
   chart            = "https://charts.jetstack.io/charts/cert-manager-v${var.cert_manager_chart_version}.tgz"
   namespace        = "cert-manager"
   create_namespace = true
-  wait             = true
-  wait_for_jobs    = true
+
+  # disabling these seems to help during "terraform destroy"
+  # because "true" lead to timeouts waiting for cert-manager
+  wait             = false
+  wait_for_jobs    = false
 
   set {
     name  = "installCRDs"
