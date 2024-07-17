@@ -12,7 +12,7 @@ resource "random_string" "cluster_token" {
   special = false
 }
 
-resource "ssh_resource" "workaround_disable_selinux" {
+resource "ssh_resource" "switch_selinux" {
   for_each = merge(var.control_plane_nodes, var.worker_nodes)
 
   host        = each.value.default_ipv4_address
@@ -28,7 +28,7 @@ resource "ssh_resource" "workaround_disable_selinux" {
 }
 
 resource "ssh_resource" "additional_packages" {
-  depends_on = [ssh_resource.workaround_disable_selinux]
+  depends_on = [ssh_resource.switch_selinux]
 
   for_each = merge(var.control_plane_nodes, var.worker_nodes)
 
