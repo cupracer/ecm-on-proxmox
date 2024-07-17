@@ -1,4 +1,6 @@
 terraform {
+  required_version = ">= v1.9.2"
+  
   required_providers {
     vsphere = {
       source = "hashicorp/vsphere"
