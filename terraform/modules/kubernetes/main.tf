@@ -146,21 +146,24 @@ resource "local_file" "kube_config_server_yaml" {
 #   }
 # }
 # 
-# data "http" "kubernetes" {
-#   depends_on = [local_file.kube_config_server_yaml, ]
-# 
-#   url      = "${local.cluster_url}/ping"
-#   insecure = true
-# 
-#   retry {
-#     attempts     = 10
-#     min_delay_ms = 1000
-#     max_delay_ms = 3000
-#   }
-# }
+
+data "http" "wait_for_kubernetes" {
+  depends_on = [local_file.kube_config_server_yaml, ]
+
+  #url            = format("%s/healthz", aws_eks_cluster.this[0].endpoint)
+  url            = "${local.cluster_url}/ping"
+  insecure       = true
+  #ca_certificate = base64decode(local.cluster_auth_base64)
+  
+  retry {
+    attempts     = 9
+    min_delay_ms = 30000
+    max_delay_ms = 60000
+  }
+}
 
 resource "ssh_resource" "setup_workers" {
-  depends_on = [local_file.kube_config_server_yaml, ]
+  depends_on = [data.http.wait_for_kubernetes, ]
 
   for_each = var.worker_nodes
 
