@@ -111,11 +111,25 @@ resource "helm_release" "rancher_server" {
   }
 }
 
+data "http" "wait_for_rancher" {
+  depends_on = [helm_release.rancher_server, ]
+
+  #url            = format("%s/healthz", aws_eks_cluster.this[0].endpoint)
+  url            = "${local.rancher_url}/ping"
+  insecure       = true
+  #ca_certificate = base64decode(local.cluster_auth_base64)
+  
+  retry {
+    attempts     = 9
+    min_delay_ms = 30000
+    max_delay_ms = 60000
+  }
+}
+
 resource "rancher2_bootstrap" "admin" {
-  depends_on = [ helm_release.rancher_server, ]
+  depends_on = [ data.http.wait_for_rancher, ]
 
   initial_password = local.rancher_bootstrap_password
   password         = var.rancher_password
   telemetry        = false
 }
-
