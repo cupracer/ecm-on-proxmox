@@ -27,7 +27,8 @@ zypper --non-interactive install --recommends \
     iptables bind-utils mtr tcpdump wireguard-tools \
     restorecond setools-console \
     open-iscsi nfs-client cifs-utils \
-    bash-completion git cryptsetup
+    bash-completion git cryptsetup \
+    command-not-found policycoreutils-python-utils
 
 # Disable predictable network names
 sed -i 's/^\(GRUB_CMDLINE_LINUX_DEFAULT.*\)\"$/\1 net.ifnames=0"/' /etc/default/grub
