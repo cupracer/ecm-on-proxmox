@@ -57,16 +57,6 @@ resource "local_file" "kube_config_server_yaml" {
   content  = ssh_resource.retrieve_cluster_config.result
 }
 
-resource "null_resource" "wait_for_kubernetes" {
-  triggers = {
-    url_check = (data.http.kubernetes.request_body == "pong")
-  }
-
-  provisioner "local-exec" {
-    command = "echo 'Cluster URL ${local.cluster_url}/ping is reachable.'"
-  }
-}
-
 data "http" "kubernetes" {
   depends_on = [ local_file.kube_config_server_yaml, ]
 
