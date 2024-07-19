@@ -1,0 +1,40 @@
+# This workaround taken from: https://github.com/rancher/rke2/issues/1865#issuecomment-1252422837
+# 
+# does NOT seem to work!!
+
+module rke2 1.0;
+
+require {
+        type container_t;
+        type container_var_lib_t;
+        type rke2_service_t;
+        type rke2_service_db_t;
+        type var_lib_t;
+        type unconfined_service_t;
+        class process { sigchld transition };
+        class file { create read write open };
+      class fifo_file open;
+}
+
+#============= container_t ==============
+
+allow container_t var_lib_t:file read;
+allow container_t container_var_lib_t:file read;
+allow container_t container_var_lib_t:file open;
+allow container_t unconfined_service_t:process sigchld;
+allow container_t unconfined_service_t:fifo_file open;
+
+#============= rke2_service_db_t ==============
+
+allow rke2_service_db_t unconfined_service_t:process sigchld;
+
+#============= rke2_service_t ==============
+
+allow rke2_service_t container_var_lib_t:file { create write };
+allow rke2_service_t unconfined_service_t:process sigchld;
+
+#============= unconfined_service_t ==============
+
+allow unconfined_service_t container_t:process transition;
+allow unconfined_service_t rke2_service_db_t:process transition;
+allow unconfined_service_t rke2_service_t:process transition;

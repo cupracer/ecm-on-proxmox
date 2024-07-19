@@ -1,0 +1,9 @@
+module k3s 1.0;
+
+require {
+    type bin_t;
+    type usr_t;
+    class file { getattr open read };
+}
+
+allow bin_t self:file { getattr open read };

@@ -12,7 +12,7 @@ resource "random_string" "cluster_token" {
   special = false
 }
 
-resource "ssh_resource" "switch_selinux" {
+resource "ssh_resource" "toggle_selinux" {
   for_each = merge(var.control_plane_nodes, var.worker_nodes)
 
   host        = each.value.default_ipv4_address
@@ -27,8 +27,45 @@ resource "ssh_resource" "switch_selinux" {
   ]
 }
 
+resource "ssh_resource" "configure_kubernetes_selinux" {
+  depends_on = [ssh_resource.toggle_selinux]
+
+  for_each = merge(var.control_plane_nodes, var.worker_nodes)
+
+  host        = each.value.default_ipv4_address
+  port        = 22
+  user        = "root"
+  private_key = var.ssh_private_key
+
+  pre_commands = [
+    "mkdir -p /usr/local/src/selinux"
+  ]
+
+  file {
+    destination = "/usr/local/src/selinux/${var.kubernetes_engine}.fc"
+    owner = "root"
+    group = "root"
+    permissions = "0644"
+    source = "${path.module}/selinux/${var.kubernetes_engine}.fc"
+  }
+
+  file {
+    destination = "/usr/local/src/selinux/${var.kubernetes_engine}.te"
+    owner = "root"
+    group = "root"
+    permissions = "0644"
+    source = "${path.module}/selinux/${var.kubernetes_engine}.te"
+  }
+
+  commands = var.use_selinux == true ? [
+    "checkmodule -M -m -o /usr/local/src/selinux/${var.kubernetes_engine}.mod /usr/local/src/selinux/${var.kubernetes_engine}.te",
+    "semodule_package -o /usr/local/src/selinux/${var.kubernetes_engine}.pp -m /usr/local/src/selinux/${var.kubernetes_engine}.mod -f /usr/local/src/selinux/${var.kubernetes_engine}.fc",
+    "semodule -i /usr/local/src/selinux/${var.kubernetes_engine}.pp",
+  ] : []
+}
+
 resource "ssh_resource" "additional_packages" {
-  depends_on = [ssh_resource.switch_selinux]
+  depends_on = [ssh_resource.configure_kubernetes_selinux]
 
   for_each = merge(var.control_plane_nodes, var.worker_nodes)
 
@@ -96,12 +133,16 @@ EOT
   commands = var.kubernetes_engine == "k3s" ? [<<-EOT
     curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="${var.kubernetes_engine_version}" INSTALL_K3S_SKIP_START=true INSTALL_K3S_SKIP_SELINUX_RPM=true INSTALL_K3S_SELINUX_WARN=true sh -s - server > /var/log/curl_install_${var.kubernetes_engine}.log 2>&1
 
+    restorecon -v /usr/local/bin/${var.kubernetes_engine}
+
     mkdir -p /root/.kube
     ln -sf /etc/rancher/${var.kubernetes_engine}/${var.kubernetes_engine}.yaml /root/.kube/config
     systemctl stop sshd.service && reboot
     EOT
   ] : var.kubernetes_engine == "rke2" ? [<<-EOT
     curl -sfL https://get.rke2.io | INSTALL_RKE2_VERSION="${var.kubernetes_engine_version}" sh -s - server > /var/log/curl_install_${var.kubernetes_engine}.log 2>&1
+
+    # TODO: use restorecon after a suitable selinux policy was found
 
     mkdir -p /root/.kube
     ln -sf /etc/rancher/${var.kubernetes_engine}/${var.kubernetes_engine}.yaml /root/.kube/config
@@ -201,6 +242,8 @@ EOT
       INSTALL_K3S_SELINUX_WARN=true \
       sh - > /var/log/curl_install_${var.kubernetes_engine}.log 2>&1
 
+    restorecon -v /usr/local/bin/${var.kubernetes_engine}
+
     systemctl stop sshd.service && reboot
     EOT
   ] : var.kubernetes_engine == "rke2" ? [<<-EOT
@@ -209,6 +252,8 @@ EOT
       RKE2_URL="${local.cluster_url}" \
       RKE2_TOKEN="${local.cluster_token}" \
       sh - > /var/log/curl_install_${var.kubernetes_engine}.log 2>&1
+
+    # TODO: use restorecon after a suitable selinux policy was found
 
     systemctl enable rke2-agent.service
     systemctl stop sshd.service && reboot
