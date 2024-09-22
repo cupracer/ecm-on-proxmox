@@ -60,3 +60,4 @@ node_root_plain_password          = "changeme"
 # hcloud_server_type           = ""
 # hcloud_location              = ""
 # hcloud_ssh_keys              = []
+# hcloud_backups               = false

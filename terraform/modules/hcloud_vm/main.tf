@@ -6,10 +6,9 @@ locals {
   ssh_keys           = var.ssh_keys
 #  firewall_ids       = var.firewall_ids
 #  placement_group_id = var.placement_group_id
-#  backups            = var.backups
+  backups            = var.backups
   user_data          = data.cloudinit_config.user_data.rendered
-#  keep_disk          = var.keep_disk_size
-#  labels = var.labels
+
   root_public_keys             = var.root_public_keys
   ci_root_lock_password        = var.ci_root_lock_password
   ci_root_plain_password       = var.ci_root_plain_password
@@ -39,13 +38,21 @@ resource "hcloud_server" "server" {
   server_type        = local.server_type
   location           = local.location
   ssh_keys           = local.ssh_keys
-#  firewall_ids       = var.firewall_ids
-#  placement_group_id = var.placement_group_id
-#  backups            = var.backups
+#  firewall_ids       = local.firewall_ids
+#  placement_group_id = local.placement_group_id
+  backups            = local.backups
   user_data          = data.cloudinit_config.user_data.rendered
-#  keep_disk          = var.keep_disk_size
 
-#  labels = var.labels
+  public_net {
+    ipv4_enabled = local.public_ipv4_enabled
+    ipv6_enabled = local.public_ipv6_enabled
+  }
+
+  network {
+    network_id = var.private_net_id
+    ip         = var.private_net_ipv4
+  }
+
 
   # Prevent destroying the whole cluster if the user changes
   # any of the attributes that force to recreate the servers.

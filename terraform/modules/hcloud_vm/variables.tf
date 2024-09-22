@@ -44,3 +44,6 @@ variable "ci_root_plain_password" {
   sensitive = true
 }
 
+variable "backups" {
+  type = bool
+}

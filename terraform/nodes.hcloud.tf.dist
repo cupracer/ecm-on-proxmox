@@ -24,6 +24,7 @@ locals {
   ci_root_lock_password  = var.node_root_lock_password
   ci_root_plain_password = var.node_root_plain_password
   ssh_keys               = var.hcloud_ssh_keys
+  backups                = var.hcloud_backups
 }
 
 
@@ -35,6 +36,7 @@ module "nodes" {
   server_type            = local.server_type
   location               = local.location
   ssh_keys               = local.ssh_keys
+  backups                = local.backups
 
   name                   = each.key
 #  description            = "openSUSE MicroOS - Cluster ${local.cluster_name}"
@@ -67,5 +69,9 @@ variable "hcloud_location" {
 
 variable "hcloud_ssh_keys" {
   type        = list(string)
+}
+
+variable "hcloud_backups" {
+  type = bool
 }
 
