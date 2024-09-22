@@ -18,13 +18,8 @@ users:
 write_files:
   - path: /etc/ssh/sshd_config.d/hetzner.conf
     content: |
-      Port 22
+      ChallengeResponseAuthentication no
       PasswordAuthentication no
-      X11Forwarding no
-      MaxAuthTries 3
-      AllowTcpForwarding no
-      AllowAgentForwarding no
-      AuthorizedKeysFile .ssh/authorized_keys
 
 # Add ssh authorized keys
 #ssh_authorized_keys:
