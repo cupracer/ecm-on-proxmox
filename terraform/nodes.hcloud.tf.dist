@@ -1,0 +1,71 @@
+terraform {
+  required_version = ">= v1.9.2"
+  
+  required_providers {
+    hcloud = {
+      source  = "hetznercloud/hcloud"
+      version = ">= 1.43.0"
+    }
+    rancher2 = {
+      source = "rancher/rancher2"
+      version = ">= 4.0.0"
+    }
+  }
+}
+
+provider "hcloud" {
+  token = var.hcloud_token
+}
+
+locals {
+  microos_snapshot_id    = var.hcloud_microos_snapshot_id
+  server_type            = var.hcloud_server_type
+  location               = var.hcloud_location
+  ci_root_lock_password  = var.node_root_lock_password
+  ci_root_plain_password = var.node_root_plain_password
+  ssh_keys               = var.hcloud_ssh_keys
+}
+
+
+module "nodes" {
+  source                 = "./modules/hcloud_vm"
+  for_each               = local.cluster_nodes_map
+
+  microos_snapshot_id    = local.microos_snapshot_id
+  server_type            = local.server_type
+  location               = local.location
+  ssh_keys               = local.ssh_keys
+
+  name                   = each.key
+#  description            = "openSUSE MicroOS - Cluster ${local.cluster_name}"
+  fqdn                   = each.value.fqdn
+  node_type              = each.value.node_type
+#  cpus                   = each.value.cpu_cores
+#  memory_g               = each.value.memory_m / 1024
+#  disk_size_g            = each.value.disk_size_gb
+
+  root_public_keys       = local.root_public_keys
+  ci_root_lock_password  = local.ci_root_lock_password
+  ci_root_plain_password = local.ci_root_plain_password
+}
+
+variable "hcloud_token" {
+  type = string
+}
+
+variable "hcloud_microos_snapshot_id" {
+  type        = string
+}
+
+variable "hcloud_server_type" {
+  type        = string
+}
+
+variable "hcloud_location" {
+  type        = string
+}
+
+variable "hcloud_ssh_keys" {
+  type        = list(string)
+}
+

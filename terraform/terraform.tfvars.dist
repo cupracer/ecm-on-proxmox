@@ -54,3 +54,9 @@ node_root_plain_password          = "changeme"
 # vsphere_template             = ""
 # vsphere_folder               = ""
 
+# HCLOUD settings
+# hcloud_token                 = ""
+# hcloud_microos_snapshot_id   = -1
+# hcloud_server_type           = ""
+# hcloud_location              = ""
+# hcloud_ssh_keys              = []

@@ -1,0 +1,41 @@
+#cloud-config
+
+debug: False
+
+#fqdn: ${hostname}
+hostname: ${hostname}
+preserve_hostname: true
+
+users:
+  - name: root
+    lock_passwd: ${root_lock_password}
+    plain_text_passwd: "${root_plain_password}"
+    ssh_authorized_keys:
+      %{~ for pubkey in root_public_keys ~}
+      - ${pubkey}
+      %{~ endfor ~}
+
+write_files:
+  - path: /etc/ssh/sshd_config.d/hetzner.conf
+    content: |
+      Port 22
+      PasswordAuthentication no
+      X11Forwarding no
+      MaxAuthTries 3
+      AllowTcpForwarding no
+      AllowAgentForwarding no
+      AuthorizedKeysFile .ssh/authorized_keys
+
+# Add ssh authorized keys
+#ssh_authorized_keys:
+#%{ for key in root_public_keys ~}
+#  - ${key}
+#%{ endfor ~}
+
+growpart:
+  devices: ["/var"]
+
+runcmd:
+  - [btrfs, 'filesystem', 'resize', 'max', '/var']
+  - [systemctl, 'restart', 'sshd']
+
