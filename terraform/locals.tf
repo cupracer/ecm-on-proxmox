@@ -23,30 +23,35 @@ locals {
         "cpu_cores"    = 2,
         "memory_m"     = 2048,
         "disk_size_gb" = 30,
+        "seq_no"       = 1,
       }
     }
 
+  # Hint: We're going to use zipmap() to get a counter for each object (idx) to be used as seq_no.
+
   filtered_control_plane_hostnames = slice(local.cluster_node_hostnames, 0, local.num_control_planes)
   control_planes_map = {
-    for hostname in local.filtered_control_plane_hostnames :
+    for idx, hostname in zipmap(range(length(local.filtered_control_plane_hostnames)), local.filtered_control_plane_hostnames) :
       hostname => {
         "fqdn"         = "${hostname}.${local.dnsdomain}",
         "node_type"    = "control_plane",
         "cpu_cores"    = 4,
         "memory_m"     = 16384
         "disk_size_gb" = 30,
+        "seq_no"       = idx + 1
       }
     }
 
   filtered_worker_hostnames = slice(local.cluster_node_hostnames, local.num_control_planes, length(local.cluster_node_hostnames))
   workers_map = {
-    for hostname in local.filtered_worker_hostnames :
+    for idx, hostname in zipmap(range(length(local.filtered_worker_hostnames)), local.filtered_worker_hostnames) :
       hostname => {
         "fqdn"         = "${hostname}.${local.dnsdomain}",
         "node_type"    = "worker",
         "cpu_cores"    = 4,
         "memory_m"     = 16384,
         "disk_size_gb" = 30,
+        "seq_no"       = idx + 1
       }
   }
 
