@@ -39,7 +39,7 @@ module "rancher_registration" {
   control_plane_nodes  = local.control_plane_nodes
   worker_nodes         = local.worker_nodes
   proxy_nodes          = local.proxy_nodes
-  primary_master_host  = local.primary_master_host
+  primary_master_host  = local.primary_master_public_ipv4
   registration_command = var.registration_command
   cluster_name         = local.cluster_name
   kubernetes_engine           = var.kubernetes_engine
@@ -58,7 +58,7 @@ module "kubernetes" {
   worker_nodes          = local.worker_nodes
   set_taints            = (local.num_workers > 0)
   primary_master_fqdn   = local.primary_master_fqdn
-  primary_master_host   = local.primary_master_host
+  primary_master_host   = local.primary_master_public_ipv4
   kubernetes_engine           = var.kubernetes_engine
   kubernetes_engine_version           = var.kubernetes_engine_version
   use_selinux           = var.use_selinux
@@ -89,7 +89,7 @@ module "metallb" {
   source     = "./modules/metallb"
 
   metallb_chart_version = var.metallb_chart_version
-  control_plane         = local.primary_master_host
+  control_plane         = local.primary_master_public_ipv4
   ssh_private_key       = local.root_private_key
   kubernetes_engine           = var.kubernetes_engine
 
@@ -119,7 +119,7 @@ module "system_upgrade_controller" {
   count      = var.system_upgrade_controller_version != null ? 1 : 0
   source     = "./modules/system_upgrade_controller"
 
-  control_plane   = local.primary_master_host
+  control_plane   = local.primary_master_public_ipv4
   ssh_private_key = local.root_private_key
 
   kubernetes_engine          = var.kubernetes_engine
@@ -154,7 +154,7 @@ module "rancher" {
   control_plane_nodes        = local.control_plane_nodes
 
   ssh_private_key = local.root_private_key
-  control_plane   = local.primary_master_host
+  control_plane   = local.primary_master_public_ipv4
   ca_key_path     = var.ca_key_path
   ca_cert_path    = var.ca_cert_path
 }
