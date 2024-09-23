@@ -8,7 +8,7 @@ locals {
 resource "ssh_resource" "register_control_planes" {
   for_each     = local.register_control_plane_nodes
 
-  host         = each.value.default_ipv4_address
+  host         = each.value.public_ipv4_address
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key
@@ -21,7 +21,7 @@ resource "ssh_resource" "register_control_planes" {
 resource "ssh_resource" "register_workers" {
   for_each     = local.register_worker_nodes
 
-  host         = each.value.default_ipv4_address
+  host         = each.value.public_ipv4_address
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key

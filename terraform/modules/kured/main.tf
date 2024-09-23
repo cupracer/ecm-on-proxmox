@@ -7,7 +7,7 @@ resource "ssh_resource" "kured_transactional_updates" {
 
   for_each     = merge(local.kured_control_plane_nodes, local.kured_worker_nodes)
 
-  host         = each.value.default_ipv4_address
+  host         = each.value.public_ipv4_address
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key

@@ -26,7 +26,7 @@ output "memory" {
   value = vsphere_virtual_machine.vm.memory
 }
 
-output "default_ipv4_address" {
+output "public_ipv4_address" {
   value = vsphere_virtual_machine.vm.default_ip_address
 }
 

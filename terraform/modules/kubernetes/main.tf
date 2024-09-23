@@ -15,7 +15,7 @@ resource "random_string" "cluster_token" {
 resource "ssh_resource" "toggle_selinux" {
   for_each = merge(var.control_plane_nodes, var.worker_nodes)
 
-  host        = each.value.default_ipv4_address
+  host        = each.value.public_ipv4_address
   port        = 22
   user        = "root"
   private_key = var.ssh_private_key
@@ -32,7 +32,7 @@ resource "ssh_resource" "configure_kubernetes_selinux" {
 
   for_each = merge(var.control_plane_nodes, var.worker_nodes)
 
-  host        = each.value.default_ipv4_address
+  host        = each.value.public_ipv4_address
   port        = 22
   user        = "root"
   private_key = var.ssh_private_key
@@ -69,7 +69,7 @@ resource "ssh_resource" "additional_packages" {
 
   for_each = merge(var.control_plane_nodes, var.worker_nodes)
 
-  host        = each.value.default_ipv4_address
+  host        = each.value.public_ipv4_address
   port        = 22
   user        = "root"
   private_key = var.ssh_private_key
@@ -87,7 +87,7 @@ resource "ssh_resource" "setup_control_planes" {
 
   for_each = var.control_plane_nodes
 
-  host        = each.value.default_ipv4_address
+  host        = each.value.public_ipv4_address
   port        = 22
   user        = "root"
   private_key = var.ssh_private_key
@@ -107,7 +107,7 @@ resource "ssh_resource" "setup_control_planes" {
       cluster_token     = local.cluster_token
       cluster_fqdn      = var.cluster_fqdn
       proxy_fqdns       = [for node in var.proxy_nodes : node.fqdn]
-      proxy_ipv4s       = [for node in var.proxy_nodes : node.default_ipv4_address]
+      proxy_ipv4s       = [for node in var.proxy_nodes : node.cluster_ipv4_address]
       kubernetes_engine = var.kubernetes_engine
       use_servicelb     = var.use_servicelb
       use_traefik       = var.use_traefik
@@ -208,7 +208,7 @@ resource "ssh_resource" "setup_workers" {
 
   for_each = var.worker_nodes
 
-  host        = each.value.default_ipv4_address
+  host        = each.value.public_ipv4_address
   port        = 22
   user        = "root"
   private_key = var.ssh_private_key

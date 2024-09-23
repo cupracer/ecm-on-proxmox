@@ -1,7 +1,7 @@
 resource "ssh_resource" "dnsserver_prepare" {
   for_each     = var.proxy_nodes
 
-  host         = each.value.default_ipv4_address
+  host         = each.value.public_ipv4_address
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key
@@ -19,7 +19,7 @@ resource "ssh_resource" "dnsserver" {
 
   for_each     = var.proxy_nodes
 
-  host         = each.value.default_ipv4_address
+  host         = each.value.public_ipv4_address
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key
