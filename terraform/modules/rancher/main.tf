@@ -33,6 +33,7 @@ resource "ssh_resource" "install_ca_data" {
   count = var.ca_key_path != null && var.ca_cert_path != null ? 1 : 0
 
   host         = var.control_plane
+  bastion_host = var.bastion_host
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key
@@ -59,6 +60,7 @@ resource "ssh_resource" "install_rancher_tls" {
   count = var.ca_key_path != null && var.ca_cert_path != null ? 1 : 0
 
   host         = var.control_plane
+  bastion_host = var.bastion_host
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key

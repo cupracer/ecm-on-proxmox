@@ -14,3 +14,8 @@ variable "kured_chart_version" {
   type = string
 }
 
+variable "bastion_host" {
+  type     = string
+  nullable = true
+  default  = null
+}

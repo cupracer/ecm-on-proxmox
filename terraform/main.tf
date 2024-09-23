@@ -1,6 +1,7 @@
 module "proxies" {
   depends_on = [module.nodes]
   source     = "./modules/reverse_proxy"
+  bastion_host = local.bastion_host
 
   ssh_private_key     = local.root_private_key
   nodes               = local.proxy_nodes
@@ -11,6 +12,7 @@ module "dnsmasq" {
   depends_on = [module.proxies, ]
   count      = var.setup_dnsmasq ? 1 : 0
   source     = "./modules/dnsmasq"
+  bastion_host = local.bastion_host
 
   ssh_private_key = local.root_private_key
   proxy_nodes     = local.proxy_nodes
@@ -21,6 +23,7 @@ module "dnsmasq_hosts" {
   depends_on = [module.dnsmasq, ]
   count      = var.setup_dnsmasq || length(var.dnsmasq_servers) > 0 ? 1 : 0
   source     = "./modules/dnsmasq_hosts"
+  bastion_host = local.bastion_host
 
   ssh_private_key = local.root_private_key
   proxy_nodes     = local.proxy_nodes
@@ -34,6 +37,7 @@ module "rancher_registration" {
   depends_on = [module.proxies]
   count      = var.registration_command != null ? 1 : 0
   source     = "./modules/rancher_registration"
+  bastion_host = local.bastion_host
 
   ssh_private_key      = local.root_private_key
   control_plane_nodes  = local.control_plane_nodes
@@ -49,6 +53,7 @@ module "kubernetes" {
   depends_on = [module.proxies]
   count      = var.kubernetes_engine_version != null && var.registration_command == null ? 1 : 0
   source     = "./modules/kubernetes"
+  bastion_host = local.bastion_host
 
   ssh_private_key       = local.root_private_key
   proxy_nodes           = local.proxy_nodes
@@ -76,6 +81,7 @@ module "kured" {
   depends_on = [module.kubernetes, module.rancher_registration, ]
   count      = var.kured_chart_version != null ? 1 : 0
   source     = "./modules/kured"
+  bastion_host = local.bastion_host
 
   ssh_private_key     = local.root_private_key
   control_plane_nodes = local.control_plane_nodes
@@ -87,6 +93,7 @@ module "metallb" {
   depends_on = [module.kubernetes, module.rancher_registration, ]
   count      = var.metallb_chart_version != null ? 1 : 0
   source     = "./modules/metallb"
+  bastion_host = local.bastion_host
 
   metallb_chart_version = var.metallb_chart_version
   control_plane         = local.primary_master_public_ipv4
@@ -118,6 +125,7 @@ module "system_upgrade_controller" {
   depends_on = [module.kubernetes, module.rancher_registration, ]
   count      = var.system_upgrade_controller_version != null ? 1 : 0
   source     = "./modules/system_upgrade_controller"
+  bastion_host = local.bastion_host
 
   control_plane   = local.primary_master_public_ipv4
   ssh_private_key = local.root_private_key
@@ -140,6 +148,7 @@ module "rancher" {
   depends_on = [module.kubernetes,]
   count      = var.rancher_chart_url != null ? 1 : 0
   source     = "./modules/rancher"
+  bastion_host = local.bastion_host
 
   providers = {
     rancher2 = rancher2.bootstrap

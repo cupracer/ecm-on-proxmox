@@ -22,3 +22,9 @@ variable "kubernetes_engine" {
   type    = string
   default = null
 }
+
+variable "bastion_host" {
+  type     = string
+  nullable = true
+  default  = null
+}

@@ -9,6 +9,7 @@ resource "ssh_resource" "register_control_planes" {
   for_each     = local.register_control_plane_nodes
 
   host         = each.value.public_ipv4_address
+  bastion_host = var.bastion_host
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key
@@ -22,6 +23,7 @@ resource "ssh_resource" "register_workers" {
   for_each     = local.register_worker_nodes
 
   host         = each.value.public_ipv4_address
+  bastion_host = var.bastion_host
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key
@@ -37,6 +39,7 @@ resource "ssh_resource" "retrieve_cluster_config" {
   depends_on = [ ssh_resource.register_control_planes ]
 
   host         = var.primary_master_host
+  bastion_host = var.bastion_host
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key

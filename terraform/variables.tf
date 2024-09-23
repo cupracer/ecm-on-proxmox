@@ -126,6 +126,16 @@ variable "ca_cert_path" {
   default = null
 }
 
+variable "use_bastion" {
+  type    = bool
+  default = false
+}
+
+variable "bastion_host" {
+  type    = string
+  default = ""
+}
+
 variable "setup_dnsmasq" {
   type    = bool
   default = false

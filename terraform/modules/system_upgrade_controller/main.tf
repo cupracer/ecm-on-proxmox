@@ -1,5 +1,6 @@
 resource "ssh_resource" "setup_system_upgrade_controller" {
   host         = var.control_plane
+  bastion_host = var.bastion_host
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key

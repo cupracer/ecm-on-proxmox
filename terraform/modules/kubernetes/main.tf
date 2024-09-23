@@ -16,6 +16,7 @@ resource "ssh_resource" "toggle_selinux" {
   for_each = merge(var.control_plane_nodes, var.worker_nodes)
 
   host        = each.value.public_ipv4_address
+  bastion_host = var.bastion_host
   port        = 22
   user        = "root"
   private_key = var.ssh_private_key
@@ -33,6 +34,7 @@ resource "ssh_resource" "configure_kubernetes_selinux" {
   for_each = merge(var.control_plane_nodes, var.worker_nodes)
 
   host        = each.value.public_ipv4_address
+  bastion_host = var.bastion_host
   port        = 22
   user        = "root"
   private_key = var.ssh_private_key
@@ -70,6 +72,7 @@ resource "ssh_resource" "additional_packages" {
   for_each = merge(var.control_plane_nodes, var.worker_nodes)
 
   host        = each.value.public_ipv4_address
+  bastion_host = var.bastion_host
   port        = 22
   user        = "root"
   private_key = var.ssh_private_key
@@ -88,6 +91,7 @@ resource "ssh_resource" "setup_control_planes" {
   for_each = var.control_plane_nodes
 
   host        = each.value.public_ipv4_address
+  bastion_host = var.bastion_host
   port        = 22
   user        = "root"
   private_key = var.ssh_private_key
@@ -157,6 +161,7 @@ resource "ssh_resource" "retrieve_cluster_config" {
   depends_on = [ssh_resource.setup_control_planes]
 
   host        = var.primary_master_host
+  bastion_host = var.bastion_host
   port        = 22
   user        = "root"
   private_key = var.ssh_private_key
@@ -209,6 +214,7 @@ resource "ssh_resource" "setup_workers" {
   for_each = var.worker_nodes
 
   host        = each.value.public_ipv4_address
+  bastion_host = var.bastion_host
   port        = 22
   user        = "root"
   private_key = var.ssh_private_key

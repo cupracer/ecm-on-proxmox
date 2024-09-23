@@ -57,3 +57,9 @@ variable "use_selinux" {
   default = true
 }
 
+variable "bastion_host" {
+  type     = string
+  nullable = true
+  default  = null
+}
+

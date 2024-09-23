@@ -19,6 +19,7 @@ resource "ssh_resource" "dnsmasq_hosts" {
   for_each     = length(local.dnsmasq_servers) > 0 ? local.dnsmasq_servers : var.proxy_nodes
 
   host         = each.value.public_ipv4_address
+  bastion_host = var.bastion_host
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key
@@ -57,6 +58,7 @@ resource "ssh_resource" "nm_settings" {
   for_each = merge(var.proxy_nodes, var.cluster_nodes)
 
   host         = each.value.public_ipv4_address
+  bastion_host = var.bastion_host
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key

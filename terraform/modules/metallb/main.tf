@@ -26,6 +26,7 @@ resource "ssh_resource" "setup_address_range" {
   depends_on = [ helm_release.metallb ]
 
   host         = var.control_plane
+  bastion_host = var.bastion_host
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key

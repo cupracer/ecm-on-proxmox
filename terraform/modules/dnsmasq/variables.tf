@@ -11,3 +11,9 @@ variable "parent_dns" {
   default = []
 }
 
+variable "bastion_host" {
+  type     = string
+  nullable = true
+  default  = null
+}
+

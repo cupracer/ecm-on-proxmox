@@ -2,6 +2,7 @@ resource "ssh_resource" "install_podman" {
   for_each     = var.nodes
 
   host         = each.value.public_ipv4_address
+  bastion_host = var.bastion_host
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key
@@ -18,6 +19,7 @@ resource "ssh_resource" "setup_podman_nginx" {
   for_each     = var.nodes
 
   host         = each.value.public_ipv4_address
+  bastion_host = var.bastion_host
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key
@@ -60,6 +62,7 @@ resource "ssh_resource" "setup_nginx_config" {
   for_each     = var.nodes
 
   host         = each.value.public_ipv4_address
+  bastion_host = var.bastion_host
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key

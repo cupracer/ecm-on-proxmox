@@ -70,5 +70,7 @@ locals {
   control_plane_nodes     = { for i, n in module.nodes : i => n if n.node_type == "control_plane" }
   
   worker_nodes            = { for i, n in module.nodes : i => n if n.node_type == "worker" }
+
+  bastion_host = var.use_bastion == true ? ( var.bastion_host != null ? var.bastion_host : local.proxy_nodes[local.proxy_node_hostname].public_ipv4_address ) : null
 }
 
