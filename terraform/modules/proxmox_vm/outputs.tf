@@ -30,3 +30,12 @@ output "default_ipv4_address" {
   value = proxmox_vm_qemu.vm.default_ipv4_address
 }
 
+output "private_ipv4_address" {
+  # TODO: implement private IPv4
+  value = ""
+}
+
+output "cluster_ipv4_address" {
+  # TODO: implement private IPv4
+  value = proxmox_vm_qemu.vm.default_ipv4_address
+}

@@ -30,3 +30,12 @@ output "default_ipv4_address" {
   value = vsphere_virtual_machine.vm.default_ip_address
 }
 
+output "private_ipv4_address" {
+  # TODO: implement private IPv4
+  value = ""
+}
+
+output "cluster_ipv4_address" {
+  # TODO: implement private IPv4
+  value = vsphere_virtual_machine.vm.default_ip_address
+}
