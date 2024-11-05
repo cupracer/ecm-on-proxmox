@@ -10,7 +10,7 @@ variable "ssh_private_key" {
   type = string
 }
 
-variable "kured_chart_version" {
+variable "kured_version" {
   type = string
 }
 
@@ -18,4 +18,9 @@ variable "bastion_host" {
   type     = string
   nullable = true
   default  = null
+}
+
+# TODO: RENAME, BECAUSE IT'S AN IP?
+variable "primary_master_host" {
+  type = string
 }

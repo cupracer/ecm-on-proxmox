@@ -20,6 +20,52 @@ write_files:
     content: |
       ChallengeResponseAuthentication no
       PasswordAuthentication no
+  - path: /usr/local/sbin/rename_interface.sh
+    content: |
+      #!/bin/bash
+      set -euo pipefail
+
+      sleep 20
+
+      if ip link show | grep -q "enp7s0:"; then 
+        #INTERFACE=$(ip link show | awk '/^3:/{print $2}' | sed 's/://g')
+        INTERFACE="enp7s0"
+        MAC=$(cat /sys/class/net/$INTERFACE/address)
+
+        cat <<EOF > /etc/udev/rules.d/70-persistent-net.rules
+        SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="$MAC", NAME="eth1"
+      EOF
+
+        ip link set $INTERFACE down
+        ip link set $INTERFACE name eth1
+        ip link set eth1 up
+      fi
+
+      if nmcli -g GENERAL.CONNECTION device show eth0; then
+        eth0_connection=$(nmcli -g GENERAL.CONNECTION device show eth0)
+        nmcli connection modify "$eth0_connection" \
+          con-name eth0 \
+          connection.interface-name eth0
+        systemctl restart NetworkManager
+      fi
+
+      if nmcli -g GENERAL.CONNECTION device show eth1; then
+        eth1_connection=$(nmcli -g GENERAL.CONNECTION device show eth1)
+        nmcli connection modify "$eth1_connection" \
+          con-name eth1 \
+          connection.interface-name eth1 \
+          connection.autoconnect true
+        systemctl restart NetworkManager
+
+        # don't set private default route if public NIC exists
+        if nmcli -g GENERAL.CONNECTION device show eth0; then
+          nmcli connection modify eth1 \
+            ipv4.never-default yes
+          systemctl restart NetworkManager
+        fi
+      fi
+
+    permissions: "0744"
 
 # Add ssh authorized keys
 #ssh_authorized_keys:
@@ -31,6 +77,7 @@ growpart:
   devices: ["/var"]
 
 runcmd:
-  - [btrfs, 'filesystem', 'resize', 'max', '/var']
-  - [systemctl, 'restart', 'sshd']
+  - [ btrfs, 'filesystem', 'resize', 'max', '/var' ]
+  - [ /usr/local/sbin/rename_interface.sh ]
+  - [ systemctl, 'restart', 'sshd' ]
 

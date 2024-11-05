@@ -18,7 +18,7 @@ locals {
 resource "ssh_resource" "dnsmasq_hosts" {
   for_each     = length(local.dnsmasq_servers) > 0 ? local.dnsmasq_servers : var.proxy_nodes
 
-  host         = each.value.public_ipv4_address
+  host         = length(local.dnsmasq_servers) > 0 ? each.value.cluster_ipv4_address : each.value.public_ipv4_address
   bastion_host = var.bastion_host
   port         = 22
   user         = "root"
@@ -57,14 +57,15 @@ resource "ssh_resource" "nm_settings" {
 
   for_each = merge(var.proxy_nodes, var.cluster_nodes)
 
-  host         = each.value.public_ipv4_address
+  host         = each.value.cluster_ipv4_address
   bastion_host = var.bastion_host
   port         = 22
   user         = "root"
   private_key  = var.ssh_private_key
 
   commands = [<<-EOT
-    export NMDEVICE="$(nmcli d show eth0 | grep 'GENERAL.CONNECTION' | awk '{for (i=2; i<=NF; i++) printf "%s ", $i; print ""}' | awk '$1=$1')"
+    NMDEVICE="eth0"
+    #export NMDEVICE="$(nmcli d show eth0 | grep 'GENERAL.CONNECTION' | awk '{for (i=2; i<=NF; i++) printf "%s ", $i; print ""}' | awk '$1=$1')"
     nmcli con mod "$NMDEVICE" ipv4.ignore-auto-dns yes
     nmcli con mod "$NMDEVICE" ipv6.ignore-auto-dns yes
 
@@ -73,7 +74,21 @@ resource "ssh_resource" "nm_settings" {
     done
 
     nmcli con mod "$NMDEVICE" ipv4.dns-search ${var.dnsdomain}
-    nohup bash -c 'nmcli con down "$NMDEVICE" && nmcli con up "$NMDEVICE"' &
+    #nohup bash -c 'nmcli con down "$NMDEVICE" && nmcli con up "$NMDEVICE"' &
+
+    NMDEVICE="eth1"
+    #export NMDEVICE="$(nmcli d show eth0 | grep 'GENERAL.CONNECTION' | awk '{for (i=2; i<=NF; i++) printf "%s ", $i; print ""}' | awk '$1=$1')"
+    nmcli con mod "$NMDEVICE" ipv4.ignore-auto-dns yes
+    nmcli con mod "$NMDEVICE" ipv6.ignore-auto-dns yes
+
+    for ip in ${join(" ", local.dns_ips)}; do
+      nmcli con mod "$NMDEVICE" ipv4.dns "$ip"
+    done
+
+    nmcli con mod "$NMDEVICE" ipv4.dns-search ${var.dnsdomain}
+    #nohup bash -c 'nmcli con down "$NMDEVICE" && nmcli con up "$NMDEVICE"' &
+
+    systemctl restart NetworkManager
     EOT
   ]
 }

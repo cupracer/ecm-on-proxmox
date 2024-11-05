@@ -51,7 +51,7 @@ variable "use_selinux" {
   default = true
 }
 
-variable "kured_chart_version" {
+variable "kured_version" {
   type    = string
   default = null
 }
@@ -151,3 +151,27 @@ variable "dnsmasq_servers" {
   default = []
 }
 
+variable "public_cluster" {
+  type    = bool
+  default = true
+}
+
+variable "private_cluster" {
+  type    = bool
+  default = false
+}
+
+variable "tailscale_oauth_client_id" {
+  type = string
+  default = null
+}
+
+variable "tailscale_oauth_client_secret" {
+  type = string
+  default = null
+}
+
+variable "tailscale_user" {
+  type = string
+  default = null
+}

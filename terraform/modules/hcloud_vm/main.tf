@@ -1,7 +1,7 @@
 locals {
   name = var.name
   microos_snapshot_id = var.microos_snapshot_id
-  server_type        = var.server_type
+  server_type         = var.server_type
   location           = var.location
   ssh_keys           = var.ssh_keys
 #  firewall_ids       = var.firewall_ids
@@ -12,6 +12,14 @@ locals {
   root_public_keys             = var.root_public_keys
   ci_root_lock_password        = var.ci_root_lock_password
   ci_root_plain_password       = var.ci_root_plain_password
+
+  public_ipv4_enabled = var.public_ipv4_enabled
+  public_ipv6_enabled = false
+
+  network_id = var.network_id
+  subnet_id  = var.subnet_id
+
+  private_ipv4 = cidrhost(var.subnet_ip_range, 100 + var.seq_no)
 }
 
 data "cloudinit_config" "user_data" {
@@ -49,10 +57,9 @@ resource "hcloud_server" "server" {
   }
 
   network {
-    network_id = var.private_net_id
-    ip         = var.private_net_ipv4
+    network_id = local.network_id
+    ip         = local.private_ipv4
   }
-
 
   # Prevent destroying the whole cluster if the user changes
   # any of the attributes that force to recreate the servers.
@@ -65,4 +72,12 @@ resource "hcloud_server" "server" {
 #    ]
 #  }
 }
+
+resource "hcloud_server_network" "server" {
+  depends_on = [hcloud_server.server]
+#  ip        = local.private_ipv4
+  server_id  = hcloud_server.server.id
+  subnet_id  = local.subnet_id
+}
+
 

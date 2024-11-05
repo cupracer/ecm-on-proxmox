@@ -36,7 +36,7 @@ locals {
         "fqdn"         = "${hostname}.${local.dnsdomain}",
         "node_type"    = "control_plane",
         "cpu_cores"    = 4,
-        "memory_m"     = 16384
+        "memory_m"     = 8192
         "disk_size_gb" = 30,
         "seq_no"       = idx + 1
       }
@@ -49,7 +49,7 @@ locals {
         "fqdn"         = "${hostname}.${local.dnsdomain}",
         "node_type"    = "worker",
         "cpu_cores"    = 4,
-        "memory_m"     = 16384,
+        "memory_m"     = 8192,
         "disk_size_gb" = 30,
         "seq_no"       = idx + 1
       }
@@ -64,6 +64,8 @@ locals {
   primary_master_fqdn         = "${local.primary_master_hostname}.${local.dnsdomain}"
   primary_master_public_ipv4  = module.nodes[local.primary_master_hostname].public_ipv4_address
   primary_master_private_ipv4 = module.nodes[local.primary_master_hostname].private_ipv4_address
+  primary_master_cluster_ipv4 = local.primary_master_private_ipv4 != null ? local.primary_master_private_ipv4 : local.primary_master_public_ipv4
+
   cluster_fqdn                = values(local.proxy_nodes)[0].fqdn # TODO: REPLACE WORKAROUND AND CHOOSE A REAL LB ADDRESS
 
   proxy_nodes             = { for i, n in module.nodes : i => n if n.node_type == "proxy" }
@@ -71,6 +73,7 @@ locals {
   
   worker_nodes            = { for i, n in module.nodes : i => n if n.node_type == "worker" }
 
-  bastion_host = var.use_bastion == true ? ( var.bastion_host != null ? var.bastion_host : local.proxy_nodes[local.proxy_node_hostname].public_ipv4_address ) : null
+  bastion_host    = var.use_bastion == true ? ( var.bastion_host != null ? var.bastion_host : local.proxy_nodes[local.proxy_node_hostname].public_ipv4_address ) : null
+  private_gateway = local.proxy_nodes[local.proxy_node_hostname].private_ipv4_address
 }
 

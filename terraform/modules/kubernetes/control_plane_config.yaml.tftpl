@@ -1,7 +1,8 @@
-node-name: ${fqdn}
+node-name: ${hostname}
 token: ${cluster_token}
 disable-cloud-controller: true
 selinux: ${selinux}
+cni: ${cni}
 
 %{ if kubernetes_engine == "rke2" ~}
 enable-servicelb: ${use_servicelb}
@@ -31,12 +32,15 @@ kube-apiserver-arg:
   - "default-not-ready-toleration-seconds=10"
   - "default-unreachable-toleration-seconds=10"
 
+# TODO: RKE2 logs "Unknown flag --kube-controller-arg found in config.yaml, skipping"
 kube-controller-arg:
   - "node-monitor-period=3s"
   - "node-monitor-grace-period=15s"
 
 kubelet-arg:
   - "node-status-update-frequency=5s"
+# TODO: nur bei Hetzner verwenden:
+  - "cloud-provider=external"
 
 %{ if set_taints == true ~}  
 node-taint:

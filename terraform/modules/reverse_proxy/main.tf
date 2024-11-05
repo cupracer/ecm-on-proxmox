@@ -29,6 +29,7 @@ resource "ssh_resource" "setup_podman_nginx" {
     "systemctl disable podman-nginx; /bin/true",
   ]
 
+  # TODO: Port 9345 is only used for RKE2
   file {
     destination = "/etc/systemd/system/podman-nginx.service"
     owner = "root"
@@ -41,7 +42,7 @@ resource "ssh_resource" "setup_podman_nginx" {
 
       [Service]
       Type=exec
-      ExecStart=/usr/bin/podman run --rm -a stdout --name podman-nginx -p 80:80 -p 443:443 -p 6443:6443 -v /etc/nginx.conf:/etc/nginx/nginx.conf:ro registry.suse.com/suse/nginx
+      ExecStart=/usr/bin/podman run --rm -a stdout --name podman-nginx -p 80:80 -p 443:443 -p 6443:6443 -p 9345:9345 -v /etc/nginx.conf:/etc/nginx/nginx.conf:ro registry.suse.com/suse/nginx
       ExecStop=/usr/bin/sh -c 'while kill $MAINPID 2>/dev/null; do sleep 1; done'
       TimeoutStopSec=20
 
@@ -67,6 +68,7 @@ resource "ssh_resource" "setup_nginx_config" {
   user         = "root"
   private_key  = var.ssh_private_key
 
+  # TODO: Port 9345 is only used for RKE2
   file {
     destination = "/etc/nginx.conf"
     owner = "root"

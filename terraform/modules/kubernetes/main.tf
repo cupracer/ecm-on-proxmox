@@ -1,9 +1,11 @@
 locals {
   cluster_token     = random_string.cluster_token.result
   random_proxy_node = values(var.proxy_nodes)[0] #TODO: THIS IS FAKE AND NEEDS TO BE FIXED (NO RANDOM NEEDED)
-  cluster_url       = "https://${local.random_proxy_node.fqdn}:6443"
+  cluster_port      = var.kubernetes_engine == "rke2" ? 9345 : 6443
+  cluster_url       = "https://${var.primary_master_fqdn}:${local.cluster_port}"
   selinux_int       = var.use_selinux ? 1 : 0
   selinux_booltext  = var.use_selinux ? "true" : "false"
+  cni               = "cilium"
 }
 
 resource "random_string" "cluster_token" {
@@ -15,7 +17,7 @@ resource "random_string" "cluster_token" {
 resource "ssh_resource" "toggle_selinux" {
   for_each = merge(var.control_plane_nodes, var.worker_nodes)
 
-  host        = each.value.public_ipv4_address
+  host        = each.value.cluster_ipv4_address
   bastion_host = var.bastion_host
   port        = 22
   user        = "root"
@@ -33,7 +35,7 @@ resource "ssh_resource" "configure_kubernetes_selinux" {
 
   for_each = merge(var.control_plane_nodes, var.worker_nodes)
 
-  host        = each.value.public_ipv4_address
+  host        = each.value.cluster_ipv4_address
   bastion_host = var.bastion_host
   port        = 22
   user        = "root"
@@ -71,7 +73,7 @@ resource "ssh_resource" "additional_packages" {
 
   for_each = merge(var.control_plane_nodes, var.worker_nodes)
 
-  host        = each.value.public_ipv4_address
+  host        = each.value.cluster_ipv4_address
   bastion_host = var.bastion_host
   port        = 22
   user        = "root"
@@ -90,7 +92,7 @@ resource "ssh_resource" "setup_control_planes" {
 
   for_each = var.control_plane_nodes
 
-  host        = each.value.public_ipv4_address
+  host        = each.value.cluster_ipv4_address
   bastion_host = var.bastion_host
   port        = 22
   user        = "root"
@@ -107,16 +109,17 @@ resource "ssh_resource" "setup_control_planes" {
     group       = "root"
     permissions = "0640"
     content = templatefile("${path.module}/control_plane_config.yaml.tftpl", {
-      fqdn              = each.value.fqdn
+      hostname          = each.value.name
       cluster_token     = local.cluster_token
       cluster_fqdn      = var.cluster_fqdn
-      proxy_fqdns       = [for node in var.proxy_nodes : node.fqdn]
+      proxy_fqdns       = concat([for node in var.proxy_nodes : node.fqdn], [var.primary_master_fqdn])
       proxy_ipv4s       = [for node in var.proxy_nodes : node.cluster_ipv4_address]
       kubernetes_engine = var.kubernetes_engine
       use_servicelb     = var.use_servicelb
       use_traefik       = var.use_traefik
       set_taints        = var.set_taints
       selinux           = local.selinux_booltext
+      cni               = local.cni
     })
   }
 
@@ -182,38 +185,33 @@ resource "local_file" "kube_config_server_yaml" {
   content         = ssh_resource.retrieve_cluster_config.result
 }
 
-# resource "null_resource" "wait_for_kubernetes" {
-#   triggers = {
-#     url_check = (data.http.kubernetes.request_body == "pong")
-#   }
-# 
-#   provisioner "local-exec" {
-#     command = "echo 'Cluster URL ${local.cluster_url}/ping is reachable.'"
-#   }
-# }
-# 
+resource "ssh_resource" "wait_for_kubernetes" {
+  depends_on = [ssh_resource.setup_control_planes]
 
-data "http" "wait_for_kubernetes" {
-  depends_on = [local_file.kube_config_server_yaml, ]
+  host        = var.primary_master_host
+  bastion_host = var.bastion_host
+  port        = 22
+  user        = "root"
+  private_key = var.ssh_private_key
 
-  #url            = format("%s/healthz", aws_eks_cluster.this[0].endpoint)
-  url            = "${local.cluster_url}/ping"
-  insecure       = true
-  #ca_certificate = base64decode(local.cluster_auth_base64)
-  
-  retry {
-    attempts     = 9
-    min_delay_ms = 30000
-    max_delay_ms = 60000
-  }
+  # command taken from terraform-hcloud-kube-hetzner
+  commands = [<<-EOT
+    timeout 360 bash <<EOF
+      until [[ "\$(kubectl get --raw='/readyz' 2> /dev/null)" == "ok" ]]; do
+        echo "Waiting for the cluster to become ready..."
+        sleep 2
+      done
+    EOF
+    EOT
+  ]
 }
 
 resource "ssh_resource" "setup_workers" {
-  depends_on = [data.http.wait_for_kubernetes, ]
+  depends_on = [ssh_resource.wait_for_kubernetes, ]
 
   for_each = var.worker_nodes
 
-  host        = each.value.public_ipv4_address
+  host        = each.value.cluster_ipv4_address
   bastion_host = var.bastion_host
   port        = 22
   user        = "root"
@@ -231,7 +229,7 @@ resource "ssh_resource" "setup_workers" {
     group       = "root"
     permissions = "0640"
     content     = <<-EOT
-node-name: ${each.value.fqdn}
+node-name: ${each.value.name}
 selinux: ${local.selinux_booltext}
 kubelet-arg:
   - "node-status-update-frequency=5s"

@@ -7,7 +7,7 @@ resource "ssh_resource" "kured_transactional_updates" {
 
   for_each     = merge(local.kured_control_plane_nodes, local.kured_worker_nodes)
 
-  host         = each.value.public_ipv4_address
+  host         = each.value.cluster_ipv4_address
   bastion_host = var.bastion_host
   port         = 22
   user         = "root"
@@ -35,33 +35,68 @@ resource "ssh_resource" "kured_transactional_updates" {
   ]
 }
 
-resource "helm_release" "kured" {
-  depends_on = [ ssh_resource.kured_transactional_updates ]
+# resource "helm_release" "kured" {
+#   depends_on = [ ssh_resource.kured_transactional_updates ]
+# 
+#   name             = "kured"
+#   chart            = "https://github.com/kubereboot/charts/releases/download/kured-${var.kured_chart_version}/kured-${var.kured_chart_version}.tgz"
+#   namespace        = "kube-system"
+#   create_namespace = true
+#   wait             = true
+#   wait_for_jobs    = true
+# 
+#   values = [
+#     <<EOT
+# configuration:
+#   period: "1h"
+#   startTime: "00:00"
+#   endTime: "23:59"
+#   timeZone: "Local"
+#   annotateNodes: true
+#   preRebootNodeLabels:
+#     - "kured=rebooting"
+#   postRebootNodeLabels:
+#     - "kured=done"
+#   tolerations: [{
+#     "key": "node-role.kubernetes.io/control-plane",
+#     "effect": "NoSchedule"
+#   }]
+#   EOT
+#   ]
+# }
 
-  name             = "kured"
-  chart            = "https://github.com/kubereboot/charts/releases/download/kured-${var.kured_chart_version}/kured-${var.kured_chart_version}.tgz"
-  namespace        = "kube-system"
-  create_namespace = true
-  wait             = true
-  wait_for_jobs    = true
+resource "ssh_resource" "kured" {
+  host        = var.primary_master_host
+  bastion_host = var.bastion_host
+  port         = 22
+  user         = "root"
+  private_key  = var.ssh_private_key
 
-  values = [
-    <<EOT
-configuration:
-  period: "1h"
-  startTime: "00:00"
-  endTime: "23:59"
-  timeZone: "Local"
-  annotateNodes: true
-  preRebootNodeLabels:
-    - "kured=rebooting"
-  postRebootNodeLabels:
-    - "kured=done"
-  tolerations: [{
-    "key": "node-role.kubernetes.io/control-plane",
-    "effect": "NoSchedule"
-  }]
-  EOT
+  pre_commands = [<<-EOT
+    mkdir -p /tmp/kured
+    chmod 700 /tmp/kured
+    EOT
+  ]
+
+  file {
+    destination = "/tmp/kured/kustomization.yaml"
+    owner = "root"
+    group = "root"
+    permissions = "0644"
+    content = templatefile("${path.module}/templates/kustomization.yaml.tftpl", {
+      kured_version = var.kured_version
+    })
+  }
+
+  file {
+    destination = "/tmp/kured/kured-config.yaml"
+    owner = "root"
+    group = "root"
+    permissions = "0644"
+    content = templatefile("${path.module}/templates/kured-config.yaml.tftpl", {})
+  }
+
+  commands = [
+    "kubectl apply -k /tmp/kured",
   ]
 }
-

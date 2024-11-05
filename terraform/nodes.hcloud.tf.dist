@@ -19,7 +19,9 @@ provider "hcloud" {
 
 locals {
   microos_snapshot_id    = var.hcloud_microos_snapshot_id
-  server_type            = var.hcloud_server_type
+  server_type_px         = var.hcloud_server_type_px
+  server_type_cp         = var.hcloud_server_type_cp
+  server_type_wk         = var.hcloud_server_type_wk
   location               = var.hcloud_location
   ci_root_lock_password  = var.node_root_lock_password
   ci_root_plain_password = var.node_root_plain_password
@@ -59,7 +61,15 @@ variable "hcloud_microos_snapshot_id" {
   type        = string
 }
 
-variable "hcloud_server_type" {
+variable "hcloud_server_type_px" {
+  type        = string
+}
+
+variable "hcloud_server_type_cp" {
+  type        = string
+}
+
+variable "hcloud_server_type_wk" {
   type        = string
 }
 

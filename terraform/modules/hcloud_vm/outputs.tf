@@ -18,6 +18,10 @@ output "node_type" {
   value = var.node_type
 }
 
+output "server_type" {
+  value = var.server_type
+}
+
 #output "cpu_cores" {
 #  value = vsphere_virtual_machine.vm.num_cpus
 #}
@@ -26,7 +30,22 @@ output "node_type" {
 #  value = vsphere_virtual_machine.vm.memory
 #}
 
-output "default_ipv4_address" {
+output "subnet_id" {
+  value = var.subnet_id
+}
+
+output "subnet_ip_range" {
+  value = var.subnet_ip_range
+}
+
+output "public_ipv4_address" {
   value = hcloud_server.server.ipv4_address
 }
 
+output "private_ipv4_address" {
+  value = hcloud_server_network.server.ip
+}
+
+output "cluster_ipv4_address" {
+  value = hcloud_server_network.server.ip != "" ? hcloud_server_network.server.ip : hcloud_server.server.ipv4_address
+}

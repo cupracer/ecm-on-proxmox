@@ -9,13 +9,15 @@ node_root_lock_password           = true
 node_root_plain_password          = "changeme"
 use_bastion                       = false
 bastion_host                      = null
+public_cluster                    = true
+private_cluster                   = false
 # setup_dnsmasq                     = false
 # dnsmasq_parent_dns                = []
 # dnsmasq_servers                   = []
 # kubernetes_engine                 = "rke2"
 # kubernetes_engine_version         = "v1.28.8+k3s1"
 # use_selinux                       = true
-# kured_chart_version               = ""
+# kured_version                     = "1.16.0"
 # metallb_chart_version             = ""
 # metallb_address_range             = ""
 # metallb_l2advertisement_name      = ""
@@ -30,6 +32,9 @@ bastion_host                      = null
 # registration_command              = ""
 # ca_key_path                       = ""
 # ca_cert_path                      = ""
+# tailscale_oauth_client_id         = null
+# tailscale_oauth_client_secret     = null
+# tailscale_user                    = null
 
 # PROXMOX settings
 # proxmox_api_url          = "https://changeme.example.com:8006/api2/json"
@@ -59,7 +64,9 @@ bastion_host                      = null
 # HCLOUD settings
 # hcloud_token                 = ""
 # hcloud_microos_snapshot_id   = -1
-# hcloud_server_type           = ""
+# hcloud_server_type_px        = ""
+# hcloud_server_type_cp        = ""
+# hcloud_server_type_wk        = ""
 # hcloud_location              = ""
 # hcloud_ssh_keys              = []
 # hcloud_backups               = false

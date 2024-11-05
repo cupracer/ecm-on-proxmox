@@ -47,3 +47,24 @@ variable "ci_root_plain_password" {
 variable "backups" {
   type = bool
 }
+
+variable "network_id" {
+  type = string
+}
+
+variable "subnet_id" {
+  type = string
+}
+
+variable "subnet_ip_range" {
+  type = string
+}
+
+variable "seq_no" {
+  type = number
+}
+
+variable "public_ipv4_enabled" {
+  type = bool
+}
+

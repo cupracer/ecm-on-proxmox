@@ -12,7 +12,7 @@ stream {
   log_format basic '$remote_addr [$time_local] $protocol $status $bytes_sent $bytes_received $session_time';
   access_log /var/log/nginx/access.log basic;
 
-  upstream k8s_https {
+  upstream k8s_api {
     least_conn;
 
     %{~ for fqdn in node_control_planes_fqdn ~}
@@ -22,7 +22,20 @@ stream {
 
   server {
     listen 6443;
-    proxy_pass k8s_https;
+    proxy_pass k8s_api;
+  }
+
+  upstream rke2_supervisor_api {
+    least_conn;
+
+    %{~ for fqdn in node_control_planes_fqdn ~}
+    server ${fqdn}:9345 max_fails=1 fail_timeout=3s;
+    %{~ endfor ~}
+  }
+
+  server {
+    listen 9345;
+    proxy_pass rke2_supervisor_api;
   }
 
   upstream rancher_http {
