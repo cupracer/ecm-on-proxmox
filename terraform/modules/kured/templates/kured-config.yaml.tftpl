@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kured
+  namespace: kube-system
+spec:
+  template:
+    spec:
+      containers:
+      - name: kured
+        env:
+        - name: PERIOD
+          value: "1h"
+        - name: START_TIME
+          value: "00:00"
+        - name: END_TIME
+          value: "23:59"
+        - name: TIMEZONE
+          value: "Local"
+        - name: ANNOTATE_NODES
+          value: "true"
+        - name: PRE_REBOOT_NODE_LABELS
+          value: "kured=rebooting"
+        - name: POST_REBOOT_NODE_LABELS
+          value: "kured=done"

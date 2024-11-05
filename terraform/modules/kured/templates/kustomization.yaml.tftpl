@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - https://github.com/kubereboot/kured/releases/download/${kured_version}/kured-${kured_version}-dockerhub.yaml
+
+namespace: kube-system
+
+patches:
+  - target:
+      kind: DaemonSet
+      name: kured
+    patch: |
+      - op: add
+        path: /spec/template/spec/tolerations
+        value:
+          - key: "node-role.kubernetes.io/control-plane"
+            effect: "NoSchedule"
+  - path: kured-config.yaml
