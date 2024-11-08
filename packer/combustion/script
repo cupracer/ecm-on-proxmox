@@ -14,21 +14,13 @@ mkdir -pm700 /root/.ssh/
 cat ./ssh_public_keys/*.pub >> /root/.ssh/authorized_keys
 systemctl enable sshd.service
 
-# Set timezone
-ln -fs /usr/share/zoneinfo/Europe/Berlin /etc/localtime
-
 # Add private CA certificates
 cp ./ca_certificates/* /etc/pki/trust/anchors/.
 update-ca-certificates
 
 # Install additional software
 zypper --non-interactive install --recommends \
-    qemu-guest-agent open-vm-tools cloud-init \
-    iptables bind-utils mtr tcpdump wireguard-tools \
-    restorecond setools-console \
-    open-iscsi nfs-client cifs-utils \
-    bash-completion git cryptsetup \
-    command-not-found policycoreutils-python-utils
+    qemu-guest-agent open-vm-tools cloud-init
 
 # Disable predictable network names
 sed -i 's/^\(GRUB_CMDLINE_LINUX_DEFAULT.*\)\"$/\1 net.ifnames=0"/' /etc/default/grub
