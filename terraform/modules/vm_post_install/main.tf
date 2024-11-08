@@ -1,4 +1,4 @@
-resource "ssh_resource" "grow_filesystem" {
+resource "ssh_resource" "system_settings" {
   for_each     = var.cluster_nodes
 
   host         = each.value.public_ipv4_address
@@ -7,10 +7,20 @@ resource "ssh_resource" "grow_filesystem" {
   user         = "root"
   private_key  = var.ssh_private_key
 
-  pre_commands = [
+  commands = [
     "btrfs fi resize max /var",
     "ln -fs /usr/share/zoneinfo/Europe/Berlin /etc/localtime",
   ]
+}
+
+resource "ssh_resource" "install_packages" {
+  for_each     = var.cluster_nodes
+
+  host         = each.value.public_ipv4_address
+  #bastion_host = var.bastion_host
+  port         = 22
+  user         = "root"
+  private_key  = var.ssh_private_key
 
   commands = [<<-EOT
     transactional-update --no-selfupdate pkg install --recommends -y \
