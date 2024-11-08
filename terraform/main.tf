@@ -7,8 +7,16 @@ module "gateway" {
   nodes           = local.proxy_nodes
 }
 
+module "vm_post_install" {
+  depends_on = [module.nodes, ]
+  source     = "./modules/vm_post_install"
+
+  ssh_private_key = local.root_private_key
+  cluster_nodes = merge(local.control_plane_nodes, local.worker_nodes)
+}
+
 module "dnsmasq" {
-  depends_on = [module.gateway, ]
+  depends_on = [module.vm_post_install, ]
   count      = var.setup_dnsmasq ? 1 : 0
   source     = "./modules/dnsmasq"
   bastion_host = local.bastion_host
