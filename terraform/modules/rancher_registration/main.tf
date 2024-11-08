@@ -5,7 +5,25 @@ locals {
   cluster_url                  = "https://${local.random_proxy_node.fqdn}:6443"
 }
 
+resource "ssh_resource" "additional_packages" {
+  for_each = merge(local.register_control_plane_nodes, local.register_worker_nodes)
+
+  host        = each.value.cluster_ipv4_address
+  bastion_host = var.bastion_host
+  port        = 22
+  user        = "root"
+  private_key = var.ssh_private_key
+
+  commands = [<<-EOT
+    transactional-update --no-selfupdate shell <<< "
+      zypper --gpg-auto-import-keys install -y cri-tools kubernetes-client llvm clang"
+    systemctl stop sshd.service && reboot
+        EOT
+  ]
+}
+
 resource "ssh_resource" "register_control_planes" {
+  depends_on   = [ ssh_resource.additional_packages, ]
   for_each     = local.register_control_plane_nodes
 
   host         = each.value.public_ipv4_address
@@ -20,6 +38,7 @@ resource "ssh_resource" "register_control_planes" {
 }
 
 resource "ssh_resource" "register_workers" {
+  depends_on   = [ ssh_resource.additional_packages, ]
   for_each     = local.register_worker_nodes
 
   host         = each.value.public_ipv4_address
