@@ -118,25 +118,33 @@ resource "helm_release" "rancher_server" {
   }
 }
 
-data "http" "wait_for_rancher" {
+resource "null_resource" "wait_for_rancher" {
   depends_on = [helm_release.rancher_server, ]
 
-  #url            = format("%s/healthz", aws_eks_cluster.this[0].endpoint)
-  url            = "${local.rancher_url}/ping"
-  insecure       = true
-  #ca_certificate = base64decode(local.cluster_auth_base64)
-  
-  retry {
-    attempts     = 9
-    min_delay_ms = 30000
-    max_delay_ms = 60000
+  provisioner "local-exec" {
+    command     = <<-EOF
+    count=0
+    while [ "$${count}" -lt 5 ]; do
+      resp=$(curl -k -s -o /dev/null -w "%%{http_code}" $${RANCHER_URL}/ping)
+      echo "Waiting for $${RANCHER_URL}/ping - response: $${resp}"
+      if [ "$${resp}" = "200" ]; then
+        ((count++))
+      fi
+      sleep 2
+    done
+    EOF
+    interpreter = ["/bin/bash", "-c"]
+    environment = {
+      RANCHER_URL = local.rancher_url
+    }
   }
 }
 
 resource "rancher2_bootstrap" "admin" {
-  depends_on = [ data.http.wait_for_rancher, ]
+  depends_on = [ null_resource.wait_for_rancher, ]
 
   initial_password = local.rancher_bootstrap_password
   password         = var.rancher_password
   telemetry        = false
 }
+
