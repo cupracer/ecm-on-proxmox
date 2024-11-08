@@ -2,7 +2,8 @@ locals {
   register_control_plane_nodes = { for k, v in var.control_plane_nodes : k => v if length(var.control_plane_nodes) > 1 }
   register_worker_nodes        = { for k, v in var.worker_nodes : k => v if length(var.worker_nodes) > 1 }
   random_proxy_node            = values(var.proxy_nodes)[0]  #TODO: THIS IS FAKE AND NEEDS TO BE FIXED (NO RANDOM NEEDED)
-  cluster_url                  = "https://${local.random_proxy_node.fqdn}:6443"
+  cluster_port                 = var.kubernetes_engine == "rke2" ? 9345 : 6443
+  cluster_url                  = "https://${local.random_proxy_node.fqdn}:${local.cluster_port}"
 }
 
 resource "ssh_resource" "additional_packages" {
@@ -81,15 +82,25 @@ resource "local_file" "kube_config_server_yaml" {
   content  = ssh_resource.retrieve_cluster_config.result
 }
 
-data "http" "kubernetes" {
+resource "null_resource" "wait_for_kubernetes" {
   depends_on = [ local_file.kube_config_server_yaml, ]
 
-  url = "${local.cluster_url}/ping"
-  insecure = true
-
-  retry {
-    attempts = 10
-    min_delay_ms = 1000
-    max_delay_ms = 3000
+  provisioner "local-exec" {
+    command     = <<-EOF
+    count=0
+    while [ "$${count}" -lt 5 ]; do
+      resp=$(curl -k -s -o /dev/null -w "%%{http_code}" $${CLUSTER_URL}/ping)
+      echo "Waiting for $${CLUSTER_URL}/ping - response: $${resp}"
+      if [ "$${resp}" = "200" ]; then
+        ((count++))
+      fi
+      sleep 2
+    done
+    EOF
+    interpreter = ["/bin/bash", "-c"]
+    environment = {
+      CLUSTER_URL = local.cluster_url
+    }
   }
 }
+
