@@ -1,3 +1,7 @@
+variable "platform" {
+  type = string
+}
+
 variable "proxy_nodes" {
   type = map
 }

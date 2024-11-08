@@ -37,6 +37,7 @@ private_cluster                   = false
 # tailscale_user                    = null
 
 # PROXMOX settings
+# platform                 = "proxmox"
 # proxmox_api_url          = "https://changeme.example.com:8006/api2/json"
 # proxmox_api_token_id     = ""
 # proxmox_api_token_secret = ""
@@ -49,6 +50,7 @@ private_cluster                   = false
 # proxmox_vm_start_onboot  = false
 
 # VSPHERE settings
+# platform                     = "vsphere"
 # vsphere_user                 = ""
 # vsphere_password             = ""
 # vsphere_server               = ""
@@ -62,6 +64,7 @@ private_cluster                   = false
 # vsphere_folder               = ""
 
 # HCLOUD settings
+# platform                     = "hcloud"
 # hcloud_token                 = ""
 # hcloud_microos_snapshot_id   = -1
 # hcloud_server_type_px        = ""

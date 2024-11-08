@@ -109,6 +109,7 @@ resource "ssh_resource" "setup_control_planes" {
     group       = "root"
     permissions = "0640"
     content = templatefile("${path.module}/control_plane_config.yaml.tftpl", {
+      platform          = var.platform
       hostname          = each.value.name
       cluster_token     = local.cluster_token
       cluster_fqdn      = var.cluster_fqdn
