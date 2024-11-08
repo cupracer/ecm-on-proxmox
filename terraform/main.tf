@@ -72,6 +72,7 @@ module "kubernetes" {
   source     = "./modules/kubernetes"
   bastion_host = local.bastion_host
 
+  platform              = var.platform 
   ssh_private_key       = local.root_private_key
   proxy_nodes           = local.proxy_nodes
   cluster_name          = local.cluster_name
