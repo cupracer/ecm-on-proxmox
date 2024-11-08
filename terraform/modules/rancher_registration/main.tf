@@ -34,6 +34,8 @@ resource "ssh_resource" "register_control_planes" {
 
   commands = [
     "${var.registration_command} --etcd --controlplane",
+    "mkdir -p /root/.kube",
+    "ln -sf /etc/rancher/${var.kubernetes_engine}/${var.kubernetes_engine}.yaml /root/.kube/config",
   ]
 }
 
