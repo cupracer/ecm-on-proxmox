@@ -64,7 +64,7 @@ locals {
   primary_master_fqdn         = "${local.primary_master_hostname}.${local.dnsdomain}"
   primary_master_public_ipv4  = module.nodes[local.primary_master_hostname].public_ipv4_address
   primary_master_private_ipv4 = module.nodes[local.primary_master_hostname].private_ipv4_address
-  primary_master_cluster_ipv4 = local.primary_master_private_ipv4 != null ? local.primary_master_private_ipv4 : local.primary_master_public_ipv4
+  primary_master_cluster_ipv4 = local.primary_master_private_ipv4 != "" ? local.primary_master_private_ipv4 : local.primary_master_public_ipv4
 
   cluster_fqdn                = values(local.proxy_nodes)[0].fqdn # TODO: REPLACE WORKAROUND AND CHOOSE A REAL LB ADDRESS
 
