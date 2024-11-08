@@ -1,11 +1,11 @@
-module "gateway" {
-  depends_on   = [module.nodes]
-  source       = "./modules/gateway"
-  bastion_host = local.bastion_host
-
-  ssh_private_key = local.root_private_key
-  nodes           = local.proxy_nodes
-}
+#module "gateway" {
+#  depends_on   = [module.nodes]
+#  source       = "./modules/gateway"
+#  bastion_host = local.bastion_host
+#
+#  ssh_private_key = local.root_private_key
+#  nodes           = local.proxy_nodes
+#}
 
 module "vm_post_install" {
   depends_on = [module.nodes, ]
