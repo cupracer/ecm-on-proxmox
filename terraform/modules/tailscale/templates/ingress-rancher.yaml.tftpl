@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app: rancher
+  name: rancher-tailscale
+  namespace: cattle-system
+spec:
+  defaultBackend:
+    service:
+      name: rancher
+      port:
+        number: 80
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - ${cluster_name}-rancher

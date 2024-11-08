@@ -1,0 +1,18 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: tailscale
+  namespace: tailscale
+spec:
+  repo: https://pkgs.tailscale.com/helmcharts
+  chart: tailscale-operator
+  targetNamespace: tailscale
+  valuesContent: |-
+    oauth:
+      clientId: "${tailscale_oauth_client_id}"
+      clientSecret: "${tailscale_oauth_client_secret}"
+    operatorConfig:
+      hostname: "${cluster_name}-tailscale-operator"
+      logging: "info" # info, debug, dev
+    apiServerProxyConfig:
+      mode: "true"
