@@ -10,13 +10,18 @@ variable "ssh_private_key" {
   type = string
 }
 
-variable "kubernetes_engine" {
-  type    = string
-  default = null
-}
-
 variable "bastion_host" {
   type     = string
   nullable = true
   default  = null
 }
+
+variable "kubernetes_engine" {
+  type = string
+  default = null
+}
+
+variable "kubernetes_engine_version" {
+  type = string
+}
+

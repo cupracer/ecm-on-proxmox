@@ -166,7 +166,8 @@ module "system_upgrade_controller" {
   control_plane   = local.primary_master_public_ipv4
   ssh_private_key = local.root_private_key
 
-  kubernetes_engine          = var.kubernetes_engine
+  kubernetes_engine                 = var.kubernetes_engine
+  kubernetes_engine_version         = var.kubernetes_engine_version
   system_upgrade_controller_version = var.system_upgrade_controller_version
 }
 

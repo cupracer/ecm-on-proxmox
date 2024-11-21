@@ -1,0 +1,25 @@
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: ${kubernetes_engine}-worker
+  namespace: system-upgrade
+  labels:
+    ${kubernetes_engine}-upgrade: worker
+spec:
+  concurrency: 1
+  version: ${kubernetes_engine_version}
+  nodeSelector:
+    matchExpressions:
+      - {key: ${kubernetes_engine}-upgrade, operator: Exists}
+      - {key: ${kubernetes_engine}-upgrade, operator: NotIn, values: ["disabled", "false"]}
+      - {key: node-role.kubernetes.io/control-plane, operator: DoesNotExist}
+  serviceAccountName: system-upgrade
+  prepare:
+    image: rancher/${kubernetes_engine}-upgrade
+    args: ["prepare", "${kubernetes_engine}-server"]
+  drain:
+    force: true
+    skipWaitForDeleteTimeout: 60
+  upgrade:
+    image: rancher/${kubernetes_engine}-upgrade
+

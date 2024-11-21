@@ -1,0 +1,19 @@
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: ${kubernetes_engine}-server
+  namespace: system-upgrade
+  labels:
+    ${kubernetes_engine}-upgrade: server
+spec:
+  concurrency: 1
+  version: ${kubernetes_engine_version}
+  nodeSelector:
+    matchExpressions:
+      - {key: ${kubernetes_engine}-upgrade, operator: Exists}
+      - {key: ${kubernetes_engine}-upgrade, operator: NotIn, values: ["disabled", "false"]}
+      - {key: node-role.kubernetes.io/control-plane, operator: Exists}
+  serviceAccountName: system-upgrade
+  cordon: true
+  upgrade:
+    image: rancher/${kubernetes_engine}-upgrade
