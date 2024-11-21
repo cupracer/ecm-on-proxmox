@@ -47,3 +47,8 @@ kubelet-arg:
 node-taint:
   - "node-role.kubernetes.io/control-plane:NoSchedule"
 %{ endif ~}
+
+%{ if use_system_upgrade_controller == true ~}
+node-label:
+  - "${kubernetes_engine}-upgrade=true"
+%{ endif ~}

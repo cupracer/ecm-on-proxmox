@@ -72,23 +72,24 @@ module "kubernetes" {
   source     = "./modules/kubernetes"
   bastion_host = local.bastion_host
 
-  platform              = var.platform 
-  ssh_private_key       = local.root_private_key
-  proxy_nodes           = local.proxy_nodes
-  cluster_name          = local.cluster_name
-  cluster_fqdn          = local.cluster_fqdn
-  control_plane_nodes   = local.control_plane_nodes
-  worker_nodes          = local.worker_nodes
-  set_taints            = (local.num_workers > 0)
-  primary_master_fqdn   = local.primary_master_fqdn
-  primary_master_host   = local.primary_master_cluster_ipv4
-  kubernetes_engine           = var.kubernetes_engine
-  kubernetes_engine_version           = var.kubernetes_engine_version
-  use_selinux           = var.use_selinux
+  platform                      = var.platform 
+  ssh_private_key               = local.root_private_key
+  proxy_nodes                   = local.proxy_nodes
+  cluster_name                  = local.cluster_name
+  cluster_fqdn                  = local.cluster_fqdn
+  control_plane_nodes           = local.control_plane_nodes
+  worker_nodes                  = local.worker_nodes
+  set_taints                    = (local.num_workers > 0)
+  primary_master_fqdn           = local.primary_master_fqdn
+  primary_master_host           = local.primary_master_cluster_ipv4
+  kubernetes_engine             = var.kubernetes_engine
+  kubernetes_engine_version     = var.kubernetes_engine_version
+  use_selinux                   = var.use_selinux
   # TODO nur ein Versuch
-  # use_servicelb = !(var.metallb_chart_version != null)
-  use_servicelb = false
-  use_traefik   = !(var.traefik_chart_version != null)
+  # use_servicelb                 = !(var.metallb_chart_version != null)
+  use_servicelb                 = false
+  use_traefik                   = !(var.traefik_chart_version != null)
+  use_system_upgrade_controller = var.system_upgrade_controller_version != null
 }
 
 module "tailscale" {

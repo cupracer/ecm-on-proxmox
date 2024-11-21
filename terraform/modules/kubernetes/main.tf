@@ -1,11 +1,12 @@
 locals {
-  cluster_token     = random_string.cluster_token.result
-  random_proxy_node = values(var.proxy_nodes)[0] #TODO: THIS IS FAKE AND NEEDS TO BE FIXED (NO RANDOM NEEDED)
-  cluster_port      = var.kubernetes_engine == "rke2" ? 9345 : 6443
-  cluster_url       = "https://${var.primary_master_fqdn}:${local.cluster_port}"
-  selinux_int       = var.use_selinux ? 1 : 0
-  selinux_booltext  = var.use_selinux ? "true" : "false"
-  cni               = "cilium"
+  cluster_token                 = random_string.cluster_token.result
+  random_proxy_node             = values(var.proxy_nodes)[0] #TODO: THIS IS FAKE AND NEEDS TO BE FIXED (NO RANDOM NEEDED)
+  cluster_port                  = var.kubernetes_engine == "rke2" ? 9345 : 6443
+  cluster_url                   = "https://${var.primary_master_fqdn}:${local.cluster_port}"
+  selinux_int                   = var.use_selinux ? 1 : 0
+  selinux_booltext              = var.use_selinux ? "true" : "false"
+  cni                           = "cilium"
+  use_system_upgrade_controller = var.use_system_upgrade_controller
 }
 
 resource "random_string" "cluster_token" {
@@ -109,18 +110,19 @@ resource "ssh_resource" "setup_control_planes" {
     group       = "root"
     permissions = "0640"
     content = templatefile("${path.module}/control_plane_config.yaml.tftpl", {
-      platform          = var.platform
-      hostname          = each.value.name
-      cluster_token     = local.cluster_token
-      cluster_fqdn      = var.cluster_fqdn
-      proxy_fqdns       = concat([for node in var.proxy_nodes : node.fqdn], [var.primary_master_fqdn])
-      proxy_ipv4s       = [for node in var.proxy_nodes : node.cluster_ipv4_address]
-      kubernetes_engine = var.kubernetes_engine
-      use_servicelb     = var.use_servicelb
-      use_traefik       = var.use_traefik
-      set_taints        = var.set_taints
-      selinux           = local.selinux_booltext
-      cni               = local.cni
+      platform                      = var.platform
+      hostname                      = each.value.name
+      cluster_token                 = local.cluster_token
+      cluster_fqdn                  = var.cluster_fqdn
+      proxy_fqdns                   = concat([for node in var.proxy_nodes : node.fqdn], [var.primary_master_fqdn])
+      proxy_ipv4s                   = [for node in var.proxy_nodes : node.cluster_ipv4_address]
+      kubernetes_engine             = var.kubernetes_engine
+      use_servicelb                 = var.use_servicelb
+      use_traefik                   = var.use_traefik
+      set_taints                    = var.set_taints
+      selinux                       = local.selinux_booltext
+      cni                           = local.cni
+      use_system_upgrade_controller = local.use_system_upgrade_controller
     })
   }
 

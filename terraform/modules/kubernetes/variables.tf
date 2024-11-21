@@ -67,3 +67,7 @@ variable "bastion_host" {
   default  = null
 }
 
+variable "use_system_upgrade_controller" {
+  type    = bool
+  default = false
+}
